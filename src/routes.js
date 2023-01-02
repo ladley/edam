@@ -3,8 +3,11 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
+import Calendar from './pages/Calendar';
 import Blog from './pages/Blog';
 import User from './pages/User';
+import UserAdd from './pages/User/Add';
+import UserDetail from './pages/User/Detail';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
@@ -21,8 +24,11 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
+        { path: 'user/add', element: <UserAdd /> },
+        { path: 'user/:sequence', element: <UserDetail /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
+        { path: 'calendar', element: <Calendar /> },
       ],
     },
     {

@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import styled from 'styled-components'
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
-
 // ----------------------------------------------------------------------
 
 export default function UserMoreMenu() {
@@ -12,8 +12,8 @@ export default function UserMoreMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <IconButton ref={ref} onClick={() => setIsOpen(true)}>
+    <Container onClick={(e) => e.stopPropagation()} >
+      <IconButton ref={ref} onClick={() => setIsOpen(true)} >
         <Iconify icon="eva:more-vertical-fill" width={20} height={20} />
       </IconButton>
 
@@ -41,6 +41,8 @@ export default function UserMoreMenu() {
           <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
-    </>
+    </Container>
   );
 }
+
+const Container = styled.div``

@@ -1,13 +1,10 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "target": "es6",
     "module": "commonjs",
     "baseUrl": "."
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
