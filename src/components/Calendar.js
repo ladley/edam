@@ -174,6 +174,11 @@ function renderEventContent(eventInfo) {
   );
 }
 const Container = styled.div`
+
+  & .fc-daygrid-day.fc-day-today{
+    background-color: white;
+  }
+
   & .fc-daygrid-event-harness {
     border-bottom: 1px dashed #ddd;
 
