@@ -130,11 +130,13 @@ export default function Detail() {
   }
 
   const getDisplayableBirth = (val) => val.toDate().toISOString().split('T')[0]
+
   const exportAsImage = async (el, imageFileName) => {
     const canvas = await html2canvas(el);
     const image = canvas.toDataURL("image/png", 1.0);
     downloadImage(image, imageFileName);
   }
+
   const downloadImage = (blob, fileName) => {
     const fakeLink = window.document.createElement("a");
     fakeLink.style = "display:none;";
@@ -143,6 +145,9 @@ export default function Detail() {
     fakeLink.href = blob;
 
     document.body.appendChild(fakeLink);
+    const elem = document.getElementsByClassName('fc-day-today')[0]
+    console.log(elem)
+    elem.style = 'display:none;'
     fakeLink.click();
     document.body.removeChild(fakeLink);
 
@@ -281,24 +286,40 @@ export default function Detail() {
                           name: '2B 연필',
                           price: 8500,
                           each: 1,
-                          totalPrice: 8500
                         },
                         {
                           name: '4B 연필',
                           price: 8500,
                           each: 1,
-                          totalPrice: 8500
+                        },
+                        {
+                          name: '연필 깍지',
+                          price: 1000,
+                          each: 1,
+                        },
+                        {
+                          name: '지우개',
+                          price: 2000,
+                          each: 1,
+                        },
+                        {
+                          name: '아트키트 3단',
+                          price: 9000,
+                          each: 1,
                         },
                       ]}
                     />
                 </CardContent>
-                <button
-                  onClick={() => exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)}
-                >
-                  저장하기
-                </button>
               </Card>
             </div>
+              <Button
+                style={{ margin: 8 }}
+                fullWidth
+                variant='contained'
+                onClick={() => exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)}
+              >
+                저장하기
+              </Button>
 
           </Grid>
         </Grid>
