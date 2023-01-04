@@ -44,7 +44,7 @@ export default function Detail() {
 
   React.useEffect(() => {
     // console.log(regularSchedule)
-    // updateSchedule()
+    updateSchedule()
   }, [regularSchedule])
 
   const fetchInformation = async () => {
@@ -70,8 +70,8 @@ export default function Detail() {
       .update({
         'regularSchedule': regularSchedule.map(item => ({
           ...item,
-          startTM: moment(item.startTM).format('hh:mm a').toString(),
-          endTM: moment(item.startTM).format('hh:mm a').toString()
+          startTM: moment(item.startTM).format('HH:mm').toString(),
+          endTM: moment(item.endTM).format('HH:mm').toString()
         }))
       })
 
