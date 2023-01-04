@@ -17,15 +17,15 @@ import styled from 'styled-components'
 import moment from 'moment'
 import html2canvas from 'html2canvas';
 
+import setHours from "date-fns/setHours";
+import setMinutes from "date-fns/setMinutes";
+
 import Calendar from '../../components/Calendar'
 import Table from '../../components/Table'
 import "./react-datepicker.css";
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 import { db } from '../../firebase'
-
-
-const RefTable = React.forwardRef((props, ref) => <Table ref={ref} {...props} />)
 
 export default function Detail() {
   const [studentInfo, setStudentInfo] = React.useState({})
@@ -44,7 +44,7 @@ export default function Detail() {
 
   React.useEffect(() => {
     // console.log(regularSchedule)
-    updateSchedule()
+    // updateSchedule()
   }, [regularSchedule])
 
   const fetchInformation = async () => {
@@ -67,14 +67,28 @@ export default function Detail() {
       const res = await
       db.collection('Student')
       .doc(documentId)
-      .update({ 'regularSchedule': regularSchedule })
+      .update({
+        'regularSchedule': regularSchedule.map(item => ({
+          ...item,
+          startTM: moment(item.startTM).format('hh:mm a').toString(),
+          endTM: moment(item.startTM).format('hh:mm a').toString()
+        }))
+      })
 
       // console.log(res)
     } catch(e) {
       console.error('error occured in updateSchdule function', e)
     }
   }
+  const getMinutes = (string) => {
+    const split = String(string).split(':')
+    const hours = split[0]
+    let minutes = Number(split[1])
 
+    minutes += Number(hours * 60)
+
+    return (minutes)
+  }
   const fetchRegularSchedules = async () => {
     try {
       const res = await
@@ -84,11 +98,20 @@ export default function Detail() {
         .get()
       console.log(res.data())
       if(res.data().regularSchedule) {
-        setRegularSchedule(res.data().regularSchedule.map(item => ({
-          ...item,
-          startTM: item.startTM ? new Date(item.startTM.seconds * 1000) : null,
-          endTM: item.endTM ? new Date(item.endTM.seconds * 1000) : null,
-        })))
+        setRegularSchedule(res.data().regularSchedule.map(item => {
+          const startOfToday = new Date()
+          startOfToday.setHours(0)
+          startOfToday.setMinutes(0)
+          startOfToday.setSeconds(0)
+          console.log(startOfToday)
+          const startMins = getMinutes(item.startTM)
+          const endMins = getMinutes(item.endTM)
+          return {
+            ...item,
+            startTM: item.startTM ? moment(startOfToday).add(startMins, 'minutes').toDate() : null,
+            endTM: item.endTM ? moment(startOfToday).add(endMins, 'minutes').toDate() : null,
+          }
+        }))
       }
       setLoadSchedule(true)
     } catch(e) {
@@ -108,6 +131,7 @@ export default function Detail() {
   }
 
   const handleClickTime = (index, type, time) => {
+    console.log(moment(time).format('hh:mm a'))
     setRegularSchedule(prev => [
       ...prev.slice(0, index),
       {
@@ -233,11 +257,13 @@ export default function Detail() {
                             onChange={(time) => handleClickTime(index, 'startTM', time)}
                             showTimeSelect
                             showTimeSelectOnly
-                            timeFormat="aa HH:mm"
+                            timeFormat="HH:mm a"
                             timeIntervals={30}
                             timeCaption="시작시간"
-                            dateFormat="aa hh:mm"
+                            dateFormat="hh:mm a"
                             disabled={!value.use}
+                            minTime={setHours(setMinutes(new Date(), 0), 9)}
+                            maxTime={setHours(setMinutes(new Date(), 0), 22)}
                           />
                           ~
                           <DatePicker
@@ -246,11 +272,13 @@ export default function Detail() {
                             onChange={(time) => handleClickTime(index, 'endTM', time)}
                             showTimeSelect
                             showTimeSelectOnly
-                            timeFormat="aa HH:mm"
+                            timeFormat="HH:mm a"
                             timeIntervals={30}
                             timeCaption="종료시간"
-                            dateFormat="aa hh:mm"
+                            dateFormat="hh:mm a"
                             disabled={!value.use}
+                            minTime={setHours(setMinutes(new Date(), 0), 10)}
+                            maxTime={setHours(setMinutes(new Date(), 0), 23)}
                           />
                         </TimePickerWrap>
                       </DayTimeWrap>
