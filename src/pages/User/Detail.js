@@ -30,7 +30,7 @@ const RefTable = React.forwardRef((props, ref) => <Table ref={ref} {...props} />
 export default function Detail() {
   const [studentInfo, setStudentInfo] = React.useState({})
   const [loadSchedule, setLoadSchedule] = React.useState(false)
-  const [regularSchedule, setRegularSchedule] = React.useState()
+  const [regularSchedule, setRegularSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
   const [selectedYearMonth, setSelectedYearMonth] = React.useState(undefined)
 
@@ -206,7 +206,7 @@ export default function Detail() {
                       정기 스케줄
                     </Typography>
                     <DayPicker>
-                      { regularSchedule && regularSchedule.map((value, index) => 
+                      { regularSchedule.map((value, index) => 
                         <Chip
                           key={`${value.day} use selector-${index}`}
                           color='primary'
@@ -217,7 +217,7 @@ export default function Detail() {
                         />
                       )}
                     </DayPicker>
-                    { regularSchedule && regularSchedule.map((value, index) => {
+                    { regularSchedule.map((value, index) => {
                       let strColor = 'default'
                       if (value.day === 'Sunday') strColor = 'error'
                       else if (value.day === 'Saturday') strColor = 'primary'
