@@ -61,7 +61,7 @@ export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleI
 
   const handleAddSchedule = async (data) => {
     try {
-      await db.collection('Schedule').doc().set({
+      await db.collection('Schedule').add({
         ...data,
         targetStudent: db.collection('Student').doc(selectedStudent.id)
       })
