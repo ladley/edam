@@ -13,6 +13,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+import setHours from "date-fns/setHours";
+import setMinutes from "date-fns/setMinutes";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -142,10 +144,12 @@ export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleI
               }}
               showTimeSelect
               showTimeSelectOnly
-              timeFormat="aa HH:mm"
+              timeFormat="HH:mm a"
               timeIntervals={30}
               timeCaption="시작시간"
-              dateFormat="aa hh:mm"
+              dateFormat="hh:mm a"
+              minTime={setHours(setMinutes(new Date(), 0), 9)}
+              maxTime={setHours(setMinutes(new Date(), 0), 22)}
             />
             ~
             <OtherDatePicker
@@ -154,10 +158,12 @@ export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleI
               onChange={(time) => setEndTime(time)}
               showTimeSelect
               showTimeSelectOnly
-              timeFormat="aa HH:mm"
+              timeFormat="HH:mm a"
               timeIntervals={30}
               timeCaption="종료시간"
-              dateFormat="aa hh:mm"
+              dateFormat="hh:mm a"
+              minTime={setHours(setMinutes(new Date(), 0), 10)}
+              maxTime={setHours(setMinutes(new Date(), 0), 23)}
             />
           </TimePickerWrap>
           <TextField
