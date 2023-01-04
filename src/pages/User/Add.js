@@ -131,6 +131,8 @@ export default function Add() {
       })
 
       console.log('data add success:', addDataRes)
+
+      navigate('/dashboard/user')
     } catch(e) {
       console.error(e)
     }
