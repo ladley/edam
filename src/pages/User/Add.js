@@ -21,7 +21,7 @@ startOfToday.setHours(0)
 startOfToday.setMinutes(0)
 startOfToday.setSeconds(0)
 
-const DEFAULT_REGULAR_SCHEDULR = [
+export const DEFAULT_REGULAR_SCHEDULR = [
   {
     day: 'Sunday',
     korLabel: '일',

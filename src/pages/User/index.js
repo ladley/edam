@@ -27,6 +27,7 @@ import Iconify from '../../components/Iconify';
 import SearchNotFound from '../../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../../sections/@dashboard/user';
 import { db } from '../../firebase'
+import { DEFAULT_REGULAR_SCHEDULR } from './Add';
 // mock
 // import USERLIST from '../_mock/user';
 
@@ -99,8 +100,14 @@ export default function User() {
     setStudents([])
     const res = await db.collection('Student').get()
     // if(res.exist)
-    res.forEach((doc) => {
-      // console.log(doc.data())
+    res.forEach(async (doc) => {
+      if(!doc.data().regularSchedule){
+        console.log('정기 스케줄 없음',doc.data().name)
+        await db.collection('Student').doc(doc.id).set({
+          regularSchedule: DEFAULT_REGULAR_SCHEDULR
+        }, { merge: true})
+      }
+
       setStudents(prev => [...prev, {...doc.data(), id: doc.id}])
     })
   }
