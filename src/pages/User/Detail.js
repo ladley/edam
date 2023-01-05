@@ -32,6 +32,7 @@ export default function Detail() {
   const [loadSchedule, setLoadSchedule] = React.useState(false)
   const [regularSchedule, setRegularSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
+  const [isReadyCapture, setIsReadyCapture] = React.useState(false)
   const [selectedYearMonth, setSelectedYearMonth] = React.useState({
     month: undefined,
     yean: undefined,
@@ -157,10 +158,16 @@ export default function Detail() {
 
   const getDisplayableBirth = (val) => val.toDate().toISOString().split('T')[0]
 
+  // React.useState(() => {
+  //   if(isReadyCapture) downloadImage()
+  // }, [isReadyCapture])
+
   const exportAsImage = async (el, imageFileName) => {
     const canvas = await html2canvas(el);
     const image = canvas.toDataURL("image/png", 1.0);
+
     downloadImage(image, imageFileName);
+
   }
 
   const downloadImage = (blob, fileName) => {
@@ -171,23 +178,13 @@ export default function Detail() {
     fakeLink.href = blob;
 
     document.body.appendChild(fakeLink);
-    const headerElement = document.getElementsByClassName('fc-header-toolbar')[0]
-    const hideElements = document.getElementsByClassName('hide-on-capture')
-    console.log(hideElements)
-    for (let i = 0; i < hideElements.length; i+= 1)
-      hideElements[i].style.display = 'none'
-    const headerBtns = headerElement.children[headerElement.childNodes.length - 1];
-    headerBtns.style = 'display:none;'
+
     fakeLink.click();
 
     document.body.removeChild(fakeLink);
 
-    headerBtns.style = 'display:block;'
-    for (let i = 0; i < hideElements.length; i+= 1)
-      hideElements[i].style.display = 'block'
-
-
     fakeLink.remove();
+    // setIsReadyCapture(false)
   };
 
   return (
@@ -329,7 +326,25 @@ export default function Detail() {
                 style={{ marginTop: 8 }}
                 fullWidth
                 variant='contained'
-                onClick={() => exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)}
+                onClick={() => {
+
+                  const hideElements = document.getElementsByClassName('hide-on-capture')
+
+                  for (let i = 0; i < hideElements.length; i+= 1)
+                    hideElements[i].style.display = 'none'
+
+                  const headerElement = document.getElementsByClassName('fc-header-toolbar')[0]
+
+                  const headerBtns = headerElement.children[headerElement.childNodes.length - 1];
+                  headerBtns.style = 'display:none;'
+
+                  exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)
+
+
+                  headerBtns.style = 'display:block;'
+                  for (let i = 0; i < hideElements.length; i+= 1)
+                    hideElements[i].style.display = 'block'
+                }}
               >
                 저장하기
               </Button>
