@@ -48,12 +48,11 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
         totalStudyTime += Number(schedule.time)
         return true
       })
-      setBillItems([{
+      setBillItems({
         name: '수업',
         price: 11000,
         each: totalStudyTime,
-        totalPrice: 11000 * totalStudyTime
-      }])
+      })
     }
   }
   const handleDateClick = (arg) => {
