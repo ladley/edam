@@ -32,8 +32,10 @@ export default function Detail() {
   const [loadSchedule, setLoadSchedule] = React.useState(false)
   const [regularSchedule, setRegularSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
-  const [selectedYearMonth, setSelectedYearMonth] = React.useState(undefined)
-
+  const [selectedYearMonth, setSelectedYearMonth] = React.useState({
+    month: undefined,
+    yean: undefined,
+  })
   const { pathname } = useLocation()
   const documentId = pathname.slice(pathname.lastIndexOf('/') + 1, pathname.length)
   const exportRef = React.useRef()
@@ -51,7 +53,7 @@ export default function Detail() {
     try {
       const res = await db.collection('Student').doc(documentId).get()
       if (res.exists) {
-        console.log(res.id)
+        // console.log(res.id)
         setStudentInfo(res.data())
       } else {
         console.warn('there is no document')
@@ -96,14 +98,14 @@ export default function Detail() {
         .doc(documentId)
         // .collection('RegularSchedule')
         .get()
-      console.log(res.data())
+      // console.log(res.data())
       if(res.data().regularSchedule) {
         setRegularSchedule(res.data().regularSchedule.map(item => {
           const startOfToday = new Date()
           startOfToday.setHours(0)
           startOfToday.setMinutes(0)
           startOfToday.setSeconds(0)
-          console.log(startOfToday)
+          // console.log(startOfToday)
           const startMins = getMinutes(item.startTM)
           const endMins = getMinutes(item.endTM)
           return {
@@ -131,7 +133,7 @@ export default function Detail() {
   }
 
   const handleClickTime = (index, type, time) => {
-    console.log(moment(time).format('hh:mm a'))
+    // console.log(moment(time).format('hh:mm a'))
     setRegularSchedule(prev => [
       ...prev.slice(0, index),
       {
@@ -169,11 +171,12 @@ export default function Detail() {
     fakeLink.href = blob;
 
     document.body.appendChild(fakeLink);
-    const elem = document.getElementsByClassName('fc-day-today')[0]
-    console.log(elem)
-    elem.style = 'display:none;'
+    const headerElement = document.getElementsByClassName('fc-header-toolbar')[0]
+    const headerBtns = headerElement.children[headerElement.childNodes.length - 1];
+    headerBtns.style = 'display:none;'
     fakeLink.click();
     document.body.removeChild(fakeLink);
+    headerBtns.style = 'display:block;'
 
     fakeLink.remove();
   };
@@ -230,7 +233,7 @@ export default function Detail() {
                       정기 스케줄
                     </Typography>
                     <DayPicker>
-                      { regularSchedule.map((value, index) => 
+                      { regularSchedule.map((value, index) =>
                         <Chip
                           key={`${value.day} use selector-${index}`}
                           color='primary'
@@ -250,7 +253,6 @@ export default function Detail() {
                           {value.korLabel}요일
                         </Typography>
                         <TimePickerWrap>
-
                           <DatePicker
                             placeholderText='시작시간'
                             selected={value.startTM}
@@ -308,40 +310,14 @@ export default function Detail() {
                 <CardContent>
 
                     <Table
-                      data={[
-                        ...billItems,
-                        {
-                          name: '2B 연필',
-                          price: 8500,
-                          each: 1,
-                        },
-                        {
-                          name: '4B 연필',
-                          price: 8500,
-                          each: 1,
-                        },
-                        {
-                          name: '연필 깍지',
-                          price: 1000,
-                          each: 1,
-                        },
-                        {
-                          name: '지우개',
-                          price: 2000,
-                          each: 1,
-                        },
-                        {
-                          name: '아트키트 3단',
-                          price: 9000,
-                          each: 1,
-                        },
-                      ]}
+                      month={selectedYearMonth.month && selectedYearMonth.month}
+                      classBill={billItems}
                     />
                 </CardContent>
               </Card>
             </div>
               <Button
-                style={{ margin: 8 }}
+                style={{ marginTop: 8 }}
                 fullWidth
                 variant='contained'
                 onClick={() => exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)}
@@ -355,7 +331,6 @@ export default function Detail() {
     </Page>
   )
 }
-
 
 const DayPicker = styled.div`
   display: flex;
