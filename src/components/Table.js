@@ -100,7 +100,7 @@ export default function DenseTable({ classBill, month }) {
             <TableCell align="right">단가</TableCell>
             <TableCell align="right">시간/수량</TableCell>
             <TableCell align="right">가격</TableCell>
-            <TableCell align="right">&nbsp;</TableCell>
+            <TableCell align="right" className='hide-on-capture'>&nbsp;</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -125,7 +125,7 @@ export default function DenseTable({ classBill, month }) {
               <TableCell align="right">{row.price.toLocaleString('ko-KR')}</TableCell>
               <TableCell align="right">{row.each}</TableCell>
               <TableCell align="right">{(row.each * row.price).toLocaleString('ko-KR')}</TableCell>
-              <TableCell align="right">
+              <TableCell align="right" className='hide-on-capture'>
                 <ClickableIconWrap hoverColor='#ed2525'
                   onClick={() => handleDeleteItem(row.id)}
                 >
@@ -135,7 +135,7 @@ export default function DenseTable({ classBill, month }) {
             </TableRow>
           ))}
           { isAddMode &&
-            <TableRow >
+            <TableRow className='hide-on-capture'>
               <TableCell>
                 <TextField
                   label="항목명"
@@ -151,6 +151,7 @@ export default function DenseTable({ classBill, month }) {
                 <TextField
                   label="단가"
                   value={addMaterialData.price}
+                  type="number"
                   onChange={(e) => setAddMaterialData(prev => ({
                     ...prev,
                     price: e.target.value
@@ -161,6 +162,8 @@ export default function DenseTable({ classBill, month }) {
               <TableCell>
                 <TextField
                   label="수량"
+                  type="number"
+
                   value={addMaterialData.each}
                   onChange={(e) => setAddMaterialData(prev => ({
                     ...prev,
@@ -185,6 +188,7 @@ export default function DenseTable({ classBill, month }) {
         </TableBody>
       </Table>
       <AddMaterialBtn
+        className="hide-on-capture"
         onClick={() => {
           setIsAddMode(!isAddMode)
         }}

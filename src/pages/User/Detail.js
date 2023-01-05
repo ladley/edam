@@ -172,11 +172,20 @@ export default function Detail() {
 
     document.body.appendChild(fakeLink);
     const headerElement = document.getElementsByClassName('fc-header-toolbar')[0]
+    const hideElements = document.getElementsByClassName('hide-on-capture')
+    console.log(hideElements)
+    for (let i = 0; i < hideElements.length; i+= 1)
+      hideElements[i].style.display = 'none'
     const headerBtns = headerElement.children[headerElement.childNodes.length - 1];
     headerBtns.style = 'display:none;'
     fakeLink.click();
+
     document.body.removeChild(fakeLink);
+
     headerBtns.style = 'display:block;'
+    for (let i = 0; i < hideElements.length; i+= 1)
+      hideElements[i].style.display = 'block'
+
 
     fakeLink.remove();
   };
