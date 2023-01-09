@@ -56,7 +56,6 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
     }
   }
   const handleDateClick = (arg) => {
-    // console.log('date clicked', arg)
     setScheduleInfo((prev) => ({
       ...prev,
       day: arg.date
@@ -105,12 +104,7 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
     setSelectedSchedule(event.event)
     setModifierOpen(true)
   }
-  // const someMethod = () => {
-  //   if (calendarRef !== null) {
-  //     const calendarApi = calendarRef.current.getApi();
-  //     calendarApi.next();
-  //   }
-  // };
+
   return (
     <Container>
       <FullCalendar
@@ -126,18 +120,7 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
         })}
         eventContent={renderEventContent}
         eventClick={(arg) => handleEventClick(arg)}
-        events={schedule
-          // [
-          //   {
-          //     title: 'event 1',
-          //     start: '2022-12-15T18:00:00',
-          //     end: '2022-12-15T22:00:00',
-          //     extendedProps: {
-          //       department: 'BioChemistry'
-          //     },
-          //   },
-          // ]
-        }
+        events={schedule}
       />
       <ScheduleAddingModal
         modalOpen={modalOpen}

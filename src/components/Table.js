@@ -9,9 +9,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
+import FormLabel from '@mui/material/FormLabel';
+
+import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import Checkbox from '@mui/material/Checkbox';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -19,11 +25,12 @@ import AddIcon from '@mui/icons-material/Add';
 import { db } from '../firebase'
 
 export default function DenseTable({ classBill, month, year, targetId }) {
+  const [billId, setBillId] = React.useState('')
   const [billPrice, setBillPrice] = React.useState(0)
   const [isAddMode, setIsAddMode] = React.useState(false)
   const [materials, setMaterials] = React.useState([])
   const [isPaid, setIsPaid] = React.useState(false)
-  const [PaymentMethod, setPaymentMethod] = React.useState('cash')
+  const [paymentMethod, setPaymentMethod] = React.useState('cash')
   const [addMaterialData, setAddMaterialData] = React.useState({
     name: '',
     price: 0,
@@ -34,6 +41,7 @@ export default function DenseTable({ classBill, month, year, targetId }) {
 
   React.useEffect(() => {
     fetchMaterials()
+    fetchBillInformation()
   }, [targetId, month, year])
 
   React.useEffect(() => {
@@ -44,9 +52,9 @@ export default function DenseTable({ classBill, month, year, targetId }) {
     }))
   }, [month])
 
-  React.useEffect(() => {
-    
-  }, [billPrice])
+  // React.useEffect(() => {
+  //   updateBill()
+  // }, [billPrice, isPaid, paymentMethod])
 
   React.useEffect(() => {
     let price = Number(classBill.price * classBill.each)
@@ -77,6 +85,27 @@ export default function DenseTable({ classBill, month, year, targetId }) {
     }
   }
 
+  const fetchBillInformation = async () => {
+    if (!targetId || !year || !month) return
+
+    const res = await db.collection('Bill')
+      .where('student', '==', db.collection('Student').doc(targetId))
+      .where('year', '==', year)
+      .where('month', '==', month)
+      .get()
+    if (!res.empty) {
+      setBillId(res.docs[0].id)
+      const billInfo = res.docs[0].data()
+      setIsPaid(billInfo.isPaid)
+      setPaymentMethod(billInfo.paymentMethod)
+    } else {
+      const res = await db.collection('Bill').add({})
+      setIsPaid(false)
+      setPaymentMethod('card')
+      setBillId(res.id)
+    }
+  }
+
   const handleAddMaterial = async () => {
     try {
       const res = await db.collection('Material').add({})
@@ -94,14 +123,26 @@ export default function DenseTable({ classBill, month, year, targetId }) {
 
   const updateBill = async () => {
     try {
-      const res = await db.collection('Bill').add({})
-      const id = res.id
-      await db.collection('Bill').doc(id).update({
+      // const billQueryRes = await db.collection('Bill')
+      //   .where('student', '==', db.collection('Student').doc(targetId))
+      //   .where('year', '==', year)
+      //   .where('month', '==', month)
+      //   .get()
+      // let id = ''
+      // if (billQueryRes.empty) {
+      //   const res = await db.collection('Bill').add({})
+      //   id = res.id
+      // }
+      // else {
+      //   id = billQueryRes.docs[0].id
+      // }
+      if(!billId) return
+      await db.collection('Bill').doc(billId).update({
         billPrice,
         month,
         year,
         isPaid,
-        PaymentMethod: 
+        paymentMethod,
         student: db.collection('Student').doc(targetId)
       })
     } catch (err) {
@@ -245,9 +286,32 @@ export default function DenseTable({ classBill, month, year, targetId }) {
         </h4>
         <h2>총액: {billPrice.toLocaleString('ko-KR')}</h2>
       </div>
-      <div>
-        <FormGroup>
-          <FormControlLabel control={<Checkbox />} label="결제완료" />
+      <div
+                className='hide-on-capture'
+
+      >
+        <FormGroup
+        >
+          <FormControlLabel control={<Checkbox checked={isPaid} onClick={() => setIsPaid(!isPaid)} />} label="결제완료" />
+          { isPaid &&
+            <FormControl>
+              <FormLabel id="demo-radio-buttons-group-label">결제수단</FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue={paymentMethod}
+                name="radio-buttons-group"
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+              >
+                <FormControlLabel value="card" control={<Radio />} label="카드" />
+                <FormControlLabel value="cash" control={<Radio />} label="현금" />
+                <FormControlLabel value="zeroPay" control={<Radio />} label="제로페이" />
+              </RadioGroup>
+            </FormControl>
+          }
+          <Button variant='outlined' onClick={() => updateBill()}>
+            결제정보 저장하기
+          </Button>
         </FormGroup>
       </div>
     </TableContainer>
