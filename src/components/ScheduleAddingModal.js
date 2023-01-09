@@ -30,7 +30,7 @@ export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleI
   const [startTime, setStartTime] = React.useState()
   const [endTime, setEndTime] = React.useState()
   const [studentList, setStudentList] = React.useState([])
-  const [selectedStudent, setSelectedStudent] = React.useState()
+  const [selectedStudent, setSelectedStudent] = React.useState(scheduleInfo)
   const [title, setTitle] = React.useState('')
 
   React.useEffect(() => {
@@ -48,16 +48,18 @@ export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleI
     setEndTime(selectedDay)
   }, [selectedDay])
 
+  React.useEffect(() => {
+    setSelectedStudent(scheduleInfo)
+  }, [scheduleInfo])
+
   const fetchStudentList = async () => {
     // setStudentList([])
     const res = await db.collection('Student').get()
     res.forEach((doc) => {
-      // console.log(doc.data())
-      setStudentList(prev => [...prev, {...doc.data(), id: doc.id}])
-      // console.log(doc.id, scheduleInfo.id)
       if (doc.id === scheduleInfo.id) {
-        setSelectedStudent(doc.data())
+        return
       }
+      setStudentList(prev => [...prev, {...doc.data(), id: doc.id}])
     })
   }
 
@@ -111,12 +113,13 @@ export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleI
             <InputLabel id="demo-simple-select-label">이름</InputLabel>
             <Select
               value={selectedStudent && selectedStudent.id}
-              defaultValue={'aa'}
+              defaultValue={scheduleInfo.id}
               label="Age"
               onChange={(e) => {
                 setSelectedStudent(studentList.filter(student => student.id === e.target.value)[0])
               }}
             >
+              <MenuItem key={`this-student`} value={scheduleInfo.id}>{scheduleInfo.name}</MenuItem>
               { studentList && studentList.map((item, index) =>
                 <MenuItem key={`student-${index}`} value={item.id}>{item.name}</MenuItem>
               )}

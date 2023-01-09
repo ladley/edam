@@ -50,6 +50,7 @@ export default function DenseTable({ classBill, month, year, targetId }) {
   const fetchMaterials = async () => {
     try {
       setMaterials([])
+      if (!targetId || !year || !month) return
       const res = await db.collection('Material')
         .where('student', '==', db.collection('Student').doc(targetId))
         .where('year', '==', year)
