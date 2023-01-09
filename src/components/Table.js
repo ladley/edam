@@ -15,7 +15,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { db } from '../firebase'
 
-export default function DenseTable({ classBill, month }) {
+export default function DenseTable({ classBill, month, year, targetId }) {
   const [billPrice, setBillPrice] = React.useState(0)
   const [isAddMode, setIsAddMode] = React.useState(false)
   const [materials, setMaterials] = React.useState([])
@@ -23,16 +23,18 @@ export default function DenseTable({ classBill, month }) {
     name: '',
     price: 0,
     each: 0,
-    month
+    month,
+    student: undefined
   })
 
   React.useEffect(() => {
     fetchMaterials()
-  }, [])
+  }, [targetId, month, year])
   React.useEffect(() => {
     setAddMaterialData(prev => ({
       ...prev,
-      month
+      month,
+      year
     }))
   }, [month])
 
@@ -48,7 +50,11 @@ export default function DenseTable({ classBill, month }) {
   const fetchMaterials = async () => {
     try {
       setMaterials([])
-      const res = await db.collection('Material').get()
+      const res = await db.collection('Material')
+        .where('student', '==', db.collection('Student').doc(targetId))
+        .where('year', '==', year)
+        .where('month', '==', month)
+        .get()
       res.docs.forEach(item =>
         setMaterials(prev => [...prev, item.data()])
       )
@@ -66,7 +72,8 @@ export default function DenseTable({ classBill, month }) {
       const id = res.id
       await db.collection('Material').doc(id).set({
         ...addMaterialData,
-        id: res.id
+        id: res.id,
+        student: db.collection('Student').doc(targetId)
       })
       if (res) addSuccess()
     } catch (err) {
@@ -122,7 +129,7 @@ export default function DenseTable({ classBill, month }) {
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-              <TableCell align="right">{row.price.toLocaleString('ko-KR')}</TableCell>
+              <TableCell align="right">{Number(row.price.toLocaleString('ko-KR'))}</TableCell>
               <TableCell align="right">{row.each}</TableCell>
               <TableCell align="right">{(row.each * row.price).toLocaleString('ko-KR')}</TableCell>
               <TableCell align="right" className='hide-on-capture'>

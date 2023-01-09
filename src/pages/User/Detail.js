@@ -20,9 +20,10 @@ import html2canvas from 'html2canvas';
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 
+// import "./react-datepicker.css";
+import RegularSchedule from '../../components/RegularSchdule';
 import Calendar from '../../components/Calendar'
 import Table from '../../components/Table'
-import "./react-datepicker.css";
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 import { db } from '../../firebase'
@@ -30,7 +31,7 @@ import { db } from '../../firebase'
 export default function Detail() {
   const [studentInfo, setStudentInfo] = React.useState({})
   const [loadSchedule, setLoadSchedule] = React.useState(false)
-  const [regularSchedule, setRegularSchedule] = React.useState([])
+  const [schedule, setSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
   const [selectedYearMonth, setSelectedYearMonth] = React.useState({
     month: undefined,
@@ -39,6 +40,7 @@ export default function Detail() {
   const { pathname } = useLocation()
   const documentId = pathname.slice(pathname.lastIndexOf('/') + 1, pathname.length)
   const exportRef = React.useRef()
+
   React.useEffect(() => {
     fetchInformation()
     fetchRegularSchedules()
@@ -47,7 +49,7 @@ export default function Detail() {
   React.useEffect(() => {
     // console.log(regularSchedule)
     updateSchedule()
-  }, [regularSchedule])
+  }, [schedule])
 
   const fetchInformation = async () => {
     try {
@@ -70,7 +72,7 @@ export default function Detail() {
       db.collection('Student')
       .doc(documentId)
       .update({
-        'regularSchedule': regularSchedule.map(item => ({
+        'regularSchedule': schedule.map(item => ({
           ...item,
           startTM: moment(item.startTM).format('HH:mm').toString(),
           endTM: moment(item.endTM).format('HH:mm').toString()
@@ -100,7 +102,7 @@ export default function Detail() {
         .get()
       // console.log(res.data())
       if(res.data().regularSchedule) {
-        setRegularSchedule(res.data().regularSchedule.map(item => {
+        setSchedule(res.data().regularSchedule.map(item => {
           const startOfToday = new Date()
           startOfToday.setHours(0)
           startOfToday.setMinutes(0)
@@ -122,7 +124,7 @@ export default function Detail() {
   }
 
   const handleClickDay = (index) => {
-    setRegularSchedule(prev => [
+    setSchedule(prev => [
       ...prev.slice(0, index),
       {
         ...prev[index],
@@ -134,7 +136,7 @@ export default function Detail() {
 
   const handleClickTime = (index, type, time) => {
     // console.log(moment(time).format('hh:mm a'))
-    setRegularSchedule(prev => [
+    setSchedule(prev => [
       ...prev.slice(0, index),
       {
         ...prev[index],
@@ -143,7 +145,7 @@ export default function Detail() {
       ...prev.slice(index + 1)
     ])
     if (type === 'startTM') {
-      setRegularSchedule(prev => [
+      setSchedule(prev => [
         ...prev.slice(0, index),
         {
           ...prev[index],
@@ -157,10 +159,16 @@ export default function Detail() {
 
   const getDisplayableBirth = (val) => val.toDate().toISOString().split('T')[0]
 
+  // React.useState(() => {
+  //   if(isReadyCapture) downloadImage()
+  // }, [isReadyCapture])
+
   const exportAsImage = async (el, imageFileName) => {
     const canvas = await html2canvas(el);
     const image = canvas.toDataURL("image/png", 1.0);
+
     downloadImage(image, imageFileName);
+
   }
 
   const downloadImage = (blob, fileName) => {
@@ -171,23 +179,13 @@ export default function Detail() {
     fakeLink.href = blob;
 
     document.body.appendChild(fakeLink);
-    const headerElement = document.getElementsByClassName('fc-header-toolbar')[0]
-    const hideElements = document.getElementsByClassName('hide-on-capture')
-    console.log(hideElements)
-    for (let i = 0; i < hideElements.length; i+= 1)
-      hideElements[i].style.display = 'none'
-    const headerBtns = headerElement.children[headerElement.childNodes.length - 1];
-    headerBtns.style = 'display:none;'
+
     fakeLink.click();
 
     document.body.removeChild(fakeLink);
 
-    headerBtns.style = 'display:block;'
-    for (let i = 0; i < hideElements.length; i+= 1)
-      hideElements[i].style.display = 'block'
-
-
     fakeLink.remove();
+    // setIsReadyCapture(false)
   };
 
   return (
@@ -238,63 +236,17 @@ export default function Detail() {
                   }}
                 >
                   <CardContent>
-                    <Typography variant="h4" gutterBottom>
-                      정기 스케줄
-                    </Typography>
-                    <DayPicker>
-                      { regularSchedule.map((value, index) =>
-                        <Chip
-                          key={`${value.day} use selector-${index}`}
-                          color='primary'
-                          label={value.korLabel}
-                          variant={value.use ? 'filled' : 'outlined'}
-                          clickable
-                          onClick={() => handleClickDay(index)}
-                        />
-                      )}
-                    </DayPicker>
-                    { regularSchedule.map((value, index) => {
-                      let strColor = 'default'
-                      if (value.day === 'Sunday') strColor = 'error'
-                      else if (value.day === 'Saturday') strColor = 'primary'
-                      return <DayTimeWrap key={`${value.day} selector-${index}`}>
-                        <Typography variant="h5" gutterBottom color={strColor}>
-                          {value.korLabel}요일
-                        </Typography>
-                        <TimePickerWrap>
-                          <DatePicker
-                            placeholderText='시작시간'
-                            selected={value.startTM}
-                            onChange={(time) => handleClickTime(index, 'startTM', time)}
-                            showTimeSelect
-                            showTimeSelectOnly
-                            timeFormat="HH:mm a"
-                            timeIntervals={30}
-                            timeCaption="시작시간"
-                            dateFormat="hh:mm a"
-                            disabled={!value.use}
-                            minTime={setHours(setMinutes(new Date(), 0), 9)}
-                            maxTime={setHours(setMinutes(new Date(), 0), 22)}
-                          />
-                          ~
-                          <DatePicker
-                            placeholderText='종료시간'
-                            selected={value.endTM}
-                            onChange={(time) => handleClickTime(index, 'endTM', time)}
-                            showTimeSelect
-                            showTimeSelectOnly
-                            timeFormat="HH:mm a"
-                            timeIntervals={30}
-                            timeCaption="종료시간"
-                            dateFormat="hh:mm a"
-                            disabled={!value.use}
-                            minTime={setHours(setMinutes(new Date(), 0), 10)}
-                            maxTime={setHours(setMinutes(new Date(), 0), 23)}
-                          />
-                        </TimePickerWrap>
-                      </DayTimeWrap>
-                    }
-                    )}
+                    <RegularSchedule
+                      schedule={schedule}
+                      handleClickDay={handleClickDay}
+                      handleClickTime={handleClickTime}
+                    />
+                    <Button
+                      fullWidth
+                      variant='contained'
+                    >
+                      반영하기
+                    </Button>
                   </CardContent>
                 </Card>
               </Grid>
@@ -319,8 +271,10 @@ export default function Detail() {
                 <CardContent>
 
                     <Table
+                      year={selectedYearMonth.year && selectedYearMonth.year}
                       month={selectedYearMonth.month && selectedYearMonth.month}
                       classBill={billItems}
+                      targetId={studentInfo && studentInfo.id}
                     />
                 </CardContent>
               </Card>
@@ -329,7 +283,25 @@ export default function Detail() {
                 style={{ marginTop: 8 }}
                 fullWidth
                 variant='contained'
-                onClick={() => exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)}
+                onClick={() => {
+
+                  const hideElements = document.getElementsByClassName('hide-on-capture')
+
+                  for (let i = 0; i < hideElements.length; i+= 1)
+                    hideElements[i].style.display = 'none'
+
+                  const headerElement = document.getElementsByClassName('fc-header-toolbar')[0]
+
+                  const headerBtns = headerElement.children[headerElement.childNodes.length - 1];
+                  headerBtns.style = 'display:none;'
+
+                  exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)
+
+
+                  headerBtns.style = 'display:block;'
+                  for (let i = 0; i < hideElements.length; i+= 1)
+                    hideElements[i].style.display = 'block'
+                }}
               >
                 저장하기
               </Button>
