@@ -10,6 +10,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
@@ -19,6 +22,8 @@ export default function DenseTable({ classBill, month, year, targetId }) {
   const [billPrice, setBillPrice] = React.useState(0)
   const [isAddMode, setIsAddMode] = React.useState(false)
   const [materials, setMaterials] = React.useState([])
+  const [isPaid, setIsPaid] = React.useState(false)
+  const [PaymentMethod, setPaymentMethod] = React.useState('cash')
   const [addMaterialData, setAddMaterialData] = React.useState({
     name: '',
     price: 0,
@@ -30,6 +35,7 @@ export default function DenseTable({ classBill, month, year, targetId }) {
   React.useEffect(() => {
     fetchMaterials()
   }, [targetId, month, year])
+
   React.useEffect(() => {
     setAddMaterialData(prev => ({
       ...prev,
@@ -37,6 +43,10 @@ export default function DenseTable({ classBill, month, year, targetId }) {
       year
     }))
   }, [month])
+
+  React.useEffect(() => {
+    
+  }, [billPrice])
 
   React.useEffect(() => {
     let price = Number(classBill.price * classBill.each)
@@ -79,6 +89,23 @@ export default function DenseTable({ classBill, month, year, targetId }) {
       if (res) addSuccess()
     } catch (err) {
       console.error('error occured above adding material:', err)
+    }
+  }
+
+  const updateBill = async () => {
+    try {
+      const res = await db.collection('Bill').add({})
+      const id = res.id
+      await db.collection('Bill').doc(id).update({
+        billPrice,
+        month,
+        year,
+        isPaid,
+        PaymentMethod: 
+        student: db.collection('Student').doc(targetId)
+      })
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -217,6 +244,11 @@ export default function DenseTable({ classBill, month, year, targetId }) {
           우리은행 1002-439-121265 (진현수)
         </h4>
         <h2>총액: {billPrice.toLocaleString('ko-KR')}</h2>
+      </div>
+      <div>
+        <FormGroup>
+          <FormControlLabel control={<Checkbox />} label="결제완료" />
+        </FormGroup>
       </div>
     </TableContainer>
   );
