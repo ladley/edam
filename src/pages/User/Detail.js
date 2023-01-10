@@ -7,18 +7,13 @@ import {
   CardContent,
   Container,
   // Paper,
-  Chip,
   Typography,
   Stack,
   Button
 } from '@mui/material'
-import DatePicker from 'react-datepicker';
 import styled from 'styled-components'
 import moment from 'moment'
 import html2canvas from 'html2canvas';
-
-import setHours from "date-fns/setHours";
-import setMinutes from "date-fns/setMinutes";
 
 // import "./react-datepicker.css";
 import RegularSchedule from '../../components/RegularSchdule';
@@ -188,6 +183,18 @@ export default function Detail() {
     // setIsReadyCapture(false)
   };
 
+  const splitSchedule = () => {
+    schedule.forEach((daySchedule) => {
+      if (!daySchedule.use) return
+      const start = moment(daySchedule.startTM).format('HH:mm').toString()
+      const end = moment(daySchedule.endTM).format('HH:mm').toString()
+      console.log(start, end)
+      // if(start < 12 && end < 13) {
+      //   const morning = { start: start, end: 13}
+      // }
+    })
+  }
+
   return (
     <Page>
       <Container>
@@ -244,6 +251,7 @@ export default function Detail() {
                     <Button
                       fullWidth
                       variant='contained'
+                      onClick={() => splitSchedule()}
                     >
                       반영하기
                     </Button>
@@ -303,7 +311,7 @@ export default function Detail() {
                     hideElements[i].style.display = 'block'
                 }}
               >
-                저장하기
+                이미지로 저장하기
               </Button>
 
           </Grid>
