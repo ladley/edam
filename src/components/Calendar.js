@@ -106,7 +106,6 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
   }
 
   const getMonthText = (month) => {
-    console.log(Number(month))
     switch (Number(month)) {
       case 1:
         return 'Jan'
@@ -140,14 +139,25 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
   return (
     <Container>
       <FullCalendar
+        headerToolbar={{
+          left: 'title',
+        //   center: 'dayGridMonth timeGridWeek',
+          right: 'prev next',
+        }}
         height={"auto"}
         firstDay={1}
         locale='ko'
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
+        dayCellContent={(info) => info.dayNumberText.slice(0, info.dayNumberText.length - 1)}
+        dayCellDidMount={(info) => {
+          // console.log(info)
+          // const element = `<div style='position: absolute; left: 4px; top: 4px;'>TEST-${info.dayNumberText}</div>`
+          // document.getElementById(`#fc-day-span-${info.date.getDayOfYear()}`).parent().parent().prepend(element);
+        }}
         dateClick={(arg) => handleDateClick(arg)}
-        datesSet={(arg) => 
+        datesSet={(arg) =>
           setSelectedYearMonth({
           year: arg.view.title.slice(0,4),
           month: getMonthText(arg.view.title.slice(-3, -1))
