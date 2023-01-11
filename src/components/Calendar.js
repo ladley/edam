@@ -105,18 +105,52 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
     setModifierOpen(true)
   }
 
+  const getMonthText = (month) => {
+    console.log(Number(month))
+    switch (Number(month)) {
+      case 1:
+        return 'Jan'
+      case 2:
+        return 'Feb'
+      case 3:
+        return 'Mar'
+      case 4:
+        return 'Apr'
+      case 5:
+        return 'May'
+      case 6:
+        return 'Jun'
+      case 7:
+        return 'Jul'
+      case 8:
+        return 'Aug'
+      case 9:
+        return 'Sep'
+      case 10:
+        return 'Oct'
+      case 11:
+        return 'Nov'
+      case 12:
+        return 'Dec'
+      default:
+        console.error('no month data')
+        break
+    }
+  }
   return (
     <Container>
       <FullCalendar
         height={"auto"}
         firstDay={1}
+        locale='ko'
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         dateClick={(arg) => handleDateClick(arg)}
-        datesSet={(arg) => setSelectedYearMonth({
-          year: arg.view.title.slice(-4),
-          month: arg.view.title.slice(0,3)
+        datesSet={(arg) => 
+          setSelectedYearMonth({
+          year: arg.view.title.slice(0,4),
+          month: getMonthText(arg.view.title.slice(-3, -1))
         })}
         eventContent={renderEventContent}
         eventClick={(arg) => handleEventClick(arg)}
