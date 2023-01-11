@@ -184,14 +184,37 @@ export default function Detail() {
   };
 
   const splitSchedule = () => {
+    /**
+     * 09:00 = 540
+     * 13:00 = 780
+     * 13:30 = 810
+     * 17:30 = 1050
+     * 18:00 = 1080
+     * 22:00 = 1320
+     */
     schedule.forEach((daySchedule) => {
       if (!daySchedule.use) return
-      const start = moment(daySchedule.startTM).format('HH:mm').toString()
-      const end = moment(daySchedule.endTM).format('HH:mm').toString()
+      const start = getMinutes(moment(daySchedule.startTM).format('HH:mm').toString())
+      const end = getMinutes(moment(daySchedule.endTM).format('HH:mm').toString())
       console.log(start, end)
-      // if(start < 12 && end < 13) {
-      //   const morning = { start: start, end: 13}
-      // }
+
+      if(start < 780) {
+        const morningSchedule = {
+          start,
+          end: end > 780 ? 780 : end
+        }
+        console.log('morning', morningSchedule)
+      }
+
+      if(start < 810 && end > 1050) {
+        const afternoonSchedule = {
+          start: start < 810 ? 810 : start,
+          end: end > 1050 ? 1050 : end
+        }
+        console.log('morning', afternoonSchedule)
+      }
+
+      // if()
     })
   }
 
