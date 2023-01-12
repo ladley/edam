@@ -10,6 +10,8 @@ import {
 } from '@mui/material'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import moment from 'moment';
@@ -150,15 +152,16 @@ export default function RegularSchedule({ schedules = [], studentInfo = {}, onCh
               <Typography variant="h5" gutterBottom color={strColor}>
                 {value.korLabel}요일
               </Typography>
-              <Button variant='outlined' 
-                color={!addMode[index] ? 'primary' : 'error'} 
+              <Button
+                color='inherit'
                 onClick={() => setAddMode(prev => [
                   ...prev.slice(0, index),
                   !prev[index],
                   ...prev.slice(index + 1)
                 ])}
               >
-                { !addMode[index] ? '추가하기' : '취소하기'}
+                { !addMode[index] ? <AddCircleOutlineIcon /> : <HighlightOffIcon />}
+
               </Button>
             </div>
             { weekScheduleItems[index].schedules.length !== 0 &&
@@ -250,11 +253,14 @@ const IconWrap = styled.div`
   transition: all 0.2s ease-in-out;
   display: flex;
   justify-content: center;
-  /* border-radius: 50px; */
+
+  padding: 4px;
+  border-radius: 8px;
   /* padding: 4px; */
   /* background-color: red; */
   &:hover {
     color: #d60000;
+    background-color: #ffe9e9;
   }
 `
 
