@@ -11,11 +11,10 @@ import ScheduleAddingModal from './ScheduleAddingModal';
 import ScheduleModifyModal from './ScheduleModifyModal';
 import { db } from '../firebase'
 
-export default function Calendar({ studentInfo, setBillItems, selectedYearMonth, setSelectedYearMonth }) {
+export default function Calendar({ studentInfo, setBillItems, selectedYearMonth, setSelectedYearMonth, setDayList }) {
   const [modalOpen, setModalOpen] = React.useState(false)
   const [schedule, setSchedule] = React.useState([])
   const [modifierOpen, setModifierOpen] = React.useState(false)
-
   const [scheduleInfo, setScheduleInfo] = React.useState({
     ...studentInfo,
     day: undefined
@@ -150,11 +149,19 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
+        // showNonCurrentDates={false}
         dayCellContent={(info) => info.dayNumberText.slice(0, info.dayNumberText.length - 1)}
         dayCellDidMount={(info) => {
-          // console.log(info)
-          // const element = `<div style='position: absolute; left: 4px; top: 4px;'>TEST-${info.dayNumberText}</div>`
-          // document.getElementById(`#fc-day-span-${info.date.getDayOfYear()}`).parent().parent().prepend(element);
+          console.log(info.date.getMonth() + 1 ,info.date.getDate())
+          if(selectedYearMonth.month === getMonthText(moment(info.date).month() + 1)) {
+            const day = moment(info.date).day()
+            const date = moment(info.date).date()
+            setDayList(prev => [
+              ...prev.slice(0, day),
+              [ ...prev[day], date],
+              ...prev.slice(day + 1)
+            ])
+          }
         }}
         dateClick={(arg) => handleDateClick(arg)}
         datesSet={(arg) =>
@@ -164,7 +171,10 @@ export default function Calendar({ studentInfo, setBillItems, selectedYearMonth,
         })}
         eventContent={renderEventContent}
         eventClick={(arg) => handleEventClick(arg)}
-        events={schedule}
+        events={[
+          ...schedule
+        ]}
+
       />
       <ScheduleAddingModal
         modalOpen={modalOpen}

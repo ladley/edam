@@ -1,6 +1,15 @@
 import React from 'react'
-import { Button, Chip, Typography, List, ListItemButton, ListItemText, Divider } from '@mui/material'
-
+import {
+  Button,
+  Typography,
+  List,
+  ListItemButton,
+  ListItemText,
+  Divider,
+  Dialog,
+} from '@mui/material'
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import RemoveCircleOutlineOutlinedIcon from '@mui/icons-material/RemoveCircleOutlineOutlined';
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import moment from 'moment';
@@ -9,23 +18,29 @@ import styled from 'styled-components'
 
 import "./react-datepicker.css";
 
-export default function RegularSchedule({ schedule, handleClickDay, handleClickTime }) {
+export default function RegularSchedule({ schedules = [], studentInfo = {}, onChangeSchedule = () => {} }) {
   const [addMode, setAddMode] = React.useState([
     false, false, false, false, false, false, false
   ])
+  const [openEditor, setOpenEditor] = React.useState(false)
+  const [selectedSchedule, setSelectedSchedule] = React.useState({
+    day: undefined,
+    korLabel: undefined,
+    index: undefined,
+    start: undefined,
+    end: undefined
+  })
   const [weekScheduleItems, setWeekScheduleItems] = React.useState(
       [
         {
           day: 'Sunday',
           korLabel: '일',
-          use: false,
           schedules: [
           ]
         },
         {
           day: 'Monday',
           korLabel: '월',
-          use: false,
           schedules: [
           ]
         },
@@ -33,7 +48,6 @@ export default function RegularSchedule({ schedule, handleClickDay, handleClickT
         {
           day: 'Tuesday',
           korLabel: '화',
-          use: false,
           schedules: [
           ]
         },
@@ -41,41 +55,77 @@ export default function RegularSchedule({ schedule, handleClickDay, handleClickT
         {
           day: 'Wednesday',
           korLabel: '수',
-          use: false,
+          schedules: [
+          ]
+        },
+        {
+          day: 'Thursday',
+          korLabel: '목',
+          schedules: [
+          ]
+        },
+        {
+          day: 'Friday',
+          korLabel: '금',
+          schedules: [
+          ]
+        },
+        {
+          day: 'Saturday',
+          korLabel: '토',
           schedules: [
           ]
         },
       ],
-    )
+  )
+  React.useEffect(() => {
+    if(schedules.length) setWeekScheduleItems(schedules)
+  }, [schedules])
+  React.useEffect(() => {
+    onChangeSchedule(weekScheduleItems)
+  }, [weekScheduleItems])
 
-    const handleClickAddEachSchedule = (item, index) => {
-      setWeekScheduleItems(prev => {
-        console.log(index)
-        return [
-        ...prev.slice(0, index),
-        {
-          ...prev[index],
-          schedules: [
-            ...prev[index].schedules,
-            item
-          ]
-        },
-        ...prev.slice(index + 1)
-      ]})
-      setAddMode(prev => [
-        ...prev.slice(0, index),
-        !prev[index],
-        ...prev.slice(index + 1)
+  React.useEffect(() => {
+    if(selectedSchedule.day) setOpenEditor(true)
+  }, [selectedSchedule])
 
-      ])
-    }
+  const handleClickAddEachSchedule = (item, index) => {
+    setWeekScheduleItems(prev => [
+      ...prev.slice(0, index),
+      {
+        ...prev[index],
+        schedules: [
+          ...prev[index].schedules,
+          item
+        ]
+      },
+      ...prev.slice(index + 1)
+    ])
+    setAddMode(prev => [
+      ...prev.slice(0, index),
+      !prev[index],
+      ...prev.slice(index + 1)
+
+    ])
+  }
+
+  const handleRemoveScheduleItem = (dayIndex, scheduleIndex) => {
+    setWeekScheduleItems(prev =>[
+      ...prev.slice(0, dayIndex),
+      {
+        ...prev[dayIndex],
+        schedules: prev[dayIndex].schedules.filter((item, index) => index !== scheduleIndex)
+      },
+      ...prev.slice(dayIndex + 1)
+    ])
+  }
   return (
     <>
       <Typography variant="h4" gutterBottom>
         정기 스케줄
       </Typography>
-      <DayPicker>
-        { weekScheduleItems.map((value, index) =>
+      {/* <DayPicker> */}
+        {/* { weekScheduleItems.map((value, index) =>
           <Chip
             key={`${value.day} use selector-${index}`}
             color='primary'
@@ -84,88 +134,165 @@ export default function RegularSchedule({ schedule, handleClickDay, handleClickT
             clickable
             onClick={() => handleClickDay(index)}
           />
-        )}
-      </DayPicker>
-      { weekScheduleItems.map((value, index) => {
-        let strColor = 'default'
-        if (value.day === 'Sunday') strColor = 'error'
-        else if (value.day === 'Saturday') strColor = 'primary'
-        return <DayTimeWrap key={`${value.day} selector-${index}`}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}>
-            <Typography variant="h5" gutterBottom color={strColor}>
-              {value.korLabel}요일
-            </Typography>
-            <Button variant='outlined' 
-              color={!addMode[index] ? 'primary' : 'error'} 
-              onClick={() => setAddMode(prev => [
-                ...prev.slice(0, index),
-                !prev[index],
-                ...prev.slice(index + 1)
-              ])}
-            >
-              { !addMode[index] ? '추가하기' : '취소하기'}
-            </Button>
+        )} */}
+      {/* </DayPicker> */}
+      <DayTimeWrap>
+
+        { weekScheduleItems.map((value, index) => {
+          let strColor = 'default'
+          if (value.day === 'Sunday') strColor = 'error'
+          else if (value.day === 'Saturday') strColor = 'primary'
+          return <div key={`${value.day} selector-${index}`}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}>
+              <Typography variant="h5" gutterBottom color={strColor}>
+                {value.korLabel}요일
+              </Typography>
+              <Button variant='outlined' 
+                color={!addMode[index] ? 'primary' : 'error'} 
+                onClick={() => setAddMode(prev => [
+                  ...prev.slice(0, index),
+                  !prev[index],
+                  ...prev.slice(index + 1)
+                ])}
+              >
+                { !addMode[index] ? '추가하기' : '취소하기'}
+              </Button>
+            </div>
+            { weekScheduleItems[index].schedules.length !== 0 &&
+              <List >
+                <Divider />
+                { weekScheduleItems[index].schedules.map((item, scheduleIndex) =>
+                  <ListItemButton divider key={`${item.day}-reg-item-${scheduleIndex}`}
+                    onClick={() => {
+                      // setOpenEditor(true);
+                      setSelectedSchedule({
+                        day: weekScheduleItems[index].day,
+                        korLabel: weekScheduleItems[index].korLabel,
+                        start: item.start,
+                        end: item.end,
+                        dayIndex: index,
+                        scheduleIndex,
+                      })
+                    }}
+                  >
+                    <span>
+                      {scheduleIndex + 1}
+                    </span>
+                    <ListItemText style={{ textAlign: 'center' }} primary={moment(item.start).format('hh:mm a')} />
+                    ~
+                    <ListItemText style={{ textAlign: 'center' }} primary={moment(item.end).format('hh:mm a')} />
+                    <IconWrap
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleRemoveScheduleItem(index, scheduleIndex)
+                      }}
+                    >
+                      <RemoveCircleOutlineOutlinedIcon />
+                    </IconWrap>
+                  </ListItemButton>
+                )}
+
+              </List>
+
+            }
+            { addMode[index] &&
+              <TimeSelector
+                handleClick={(item) => handleClickAddEachSchedule(item, index)}
+              />
+            }
           </div>
-          { weekScheduleItems[index].schedules.length !== 0 &&
-            <List >
-              <Divider />
-              { weekScheduleItems[index].schedules.map((item, index) =>
-                <ListItemButton divider>
-                  <span>
-                    {index + 1}
-                  </span>
-                  <ListItemText style={{ textAlign: 'center' }} primary={moment(item.start).format('HH:mm')} />
-                  ~
-                  <ListItemText style={{ textAlign: 'center' }} primary={moment(item.end).format('HH:mm')} />
-                </ListItemButton>
-              )}
-              {/* <ListItemButton divider>
-                <ListItemText primary="Drafts" />
-              </ListItemButton> */}
-
-            </List>
-
-          }
-          { addMode[index] &&
-            <TimeSelector
-              handleClick={(item) => handleClickAddEachSchedule(item, index)}
-            />
-          }
-        </DayTimeWrap>
-      })}
+        })}
+      </DayTimeWrap>
+      <Dialog open={openEditor} onClose={() => setOpenEditor(false)} 
+        sx={{ '& .MuiPaper-root': { overflow: 'visible' } }}
+      >
+        <EditorWrapper>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                {selectedSchedule.korLabel}요일 {selectedSchedule.scheduleIndex + 1}번째 정기스케줄 수정
+            </Typography>
+            <CloseOutlinedIcon style={{ cursor: 'pointer' }} onClick={() => setOpenEditor(false)}/>
+          </div>
+          <TimeSelector
+            handleClick={({start, end}) => {
+              setWeekScheduleItems(prev => [
+                ...prev.slice(0, selectedSchedule.dayIndex),
+                {
+                  ...prev[selectedSchedule.dayIndex],
+                  schedules: [
+                    ...prev[selectedSchedule.dayIndex].schedules.slice(0, selectedSchedule.scheduleIndex),
+                    { start, end },
+                    ...prev[selectedSchedule.dayIndex].schedules.slice(selectedSchedule.scheduleIndex + 1)
+                  ]
+                },
+                ...prev.slice(selectedSchedule.dayIndex + 1)
+              ])
+              setOpenEditor(false)
+            }}
+            defaultStart={selectedSchedule.start}
+            defaultEnd={selectedSchedule.end}
+          />
+        </EditorWrapper>
+      </Dialog>
     </>
   )
 }
 
-
-
-const DayPicker = styled.div`
+const IconWrap = styled.div`
+  transition: all 0.2s ease-in-out;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 8px;
+  justify-content: center;
+  /* border-radius: 50px; */
+  /* padding: 4px; */
+  /* background-color: red; */
+  &:hover {
+    color: #d60000;
+  }
 `
 
 const DayTimeWrap = styled.div`
   margin-bottom: 8px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
 `
 
-const TimeSelector = ({ handleClick }) => {
+const EditorWrapper = styled.div`
+  /* background-color: red; */
+  padding: 20px;
+  overflow: visible;
+`
+
+const TimeSelector = ({ handleClick, defaultStart, defaultEnd }) => {
   const [start, setStart] = React.useState(setHours(setMinutes(new Date(), 0), 9))
-  const [end, setEnd] = React.useState(setHours(setMinutes(new Date(), 0), 10))
+  const [end, setEnd] = React.useState(setHours(setMinutes(new Date(), 0), 13))
   // const [use, setUse] = React.useState()
+
+  React.useEffect(() => {
+    if(defaultStart) setStart(defaultStart)
+  }, [defaultStart])
+
+  React.useEffect(() => {
+    if(defaultEnd) setEnd(defaultEnd)
+  }, [defaultEnd])
+
   return(
     <TimePickerWrap>
       <DatePicker
         placeholderText='시작시간'
         selected={start}
-        onChange={(time) => setStart(time)}
+        onChange={(time) => {
+          setStart(time)
+          setEnd(moment(time).add('4', 'hour').toDate())
+        }}
         showTimeSelect
         showTimeSelectOnly
         timeFormat="HH:mm a"
@@ -192,7 +319,7 @@ const TimeSelector = ({ handleClick }) => {
         maxTime={setHours(setMinutes(new Date(), 0), 23)}
       />
       <Button onClick={() => handleClick({start, end})}>
-        추가
+        확인
       </Button>
     </TimePickerWrap>
   )

@@ -23,14 +23,27 @@ import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
 import { db } from '../../firebase'
 
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+]
+
 export default function Detail() {
   const [studentInfo, setStudentInfo] = React.useState({})
   const [loadSchedule, setLoadSchedule] = React.useState(false)
   const [schedule, setSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
+  const [dayList, setDayList] = React.useState([
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ])
   const [selectedYearMonth, setSelectedYearMonth] = React.useState({
-    month: undefined,
-    yean: undefined,
+    month: String(monthNames[new Date().getMonth()]),
+    year: String(new Date().getFullYear()),
   })
   const { pathname } = useLocation()
   const documentId = pathname.slice(pathname.lastIndexOf('/') + 1, pathname.length)
@@ -43,7 +56,7 @@ export default function Detail() {
 
   React.useEffect(() => {
     // console.log(regularSchedule)
-    updateSchedule()
+    // updateSchedule()
   }, [schedule])
 
   const fetchInformation = async () => {
@@ -67,11 +80,12 @@ export default function Detail() {
       db.collection('Student')
       .doc(documentId)
       .update({
-        'regularSchedule': schedule.map(item => ({
-          ...item,
-          startTM: moment(item.startTM).format('HH:mm').toString(),
-          endTM: moment(item.endTM).format('HH:mm').toString()
-        }))
+          'regularSchedule': schedule
+        // 'regularSchedule': schedule.map(item => ({
+        //   ...item,
+        //   startTM: moment(item.startTM).format('HH:mm').toString(),
+        //   endTM: moment(item.endTM).format('HH:mm').toString()
+        // }))
       })
 
       // console.log(res)
@@ -97,59 +111,18 @@ export default function Detail() {
         .get()
       // console.log(res.data())
       if(res.data().regularSchedule) {
-        setSchedule(res.data().regularSchedule.map(item => {
-          const startOfToday = new Date()
-          startOfToday.setHours(0)
-          startOfToday.setMinutes(0)
-          startOfToday.setSeconds(0)
-          // console.log(startOfToday)
-          const startMins = getMinutes(item.startTM)
-          const endMins = getMinutes(item.endTM)
-          return {
-            ...item,
-            startTM: item.startTM ? moment(startOfToday).add(startMins, 'minutes').toDate() : null,
-            endTM: item.endTM ? moment(startOfToday).add(endMins, 'minutes').toDate() : null,
-          }
-        }))
+        setSchedule(res.data().regularSchedule.map(item => ({
+          ...item,
+          schedules: item.schedules.map(item => ({
+            start: new Date(item.start.seconds * 1000),
+            end: new Date(item.end.seconds * 1000),
+          }))
+        })))
       }
       setLoadSchedule(true)
     } catch(e) {
       console.error('error occured while fetching student\'s regular schedule: ', e)
     }
-  }
-
-  const handleClickDay = (index) => {
-    setSchedule(prev => [
-      ...prev.slice(0, index),
-      {
-        ...prev[index],
-        use: !prev[index].use
-      },
-      ...prev.slice(index + 1)
-    ])
-  }
-
-  const handleClickTime = (index, type, time) => {
-    // console.log(moment(time).format('hh:mm a'))
-    setSchedule(prev => [
-      ...prev.slice(0, index),
-      {
-        ...prev[index],
-        [type]: time
-      },
-      ...prev.slice(index + 1)
-    ])
-    if (type === 'startTM') {
-      setSchedule(prev => [
-        ...prev.slice(0, index),
-        {
-          ...prev[index],
-          'endTM': moment(time).add('4', 'hour').toDate()
-        },
-        ...prev.slice(index + 1)
-      ])
-    }
-    // console.log(index, type, time)
   }
 
   const getDisplayableBirth = (val) => val.toDate().toISOString().split('T')[0]
@@ -182,42 +155,35 @@ export default function Detail() {
     fakeLink.remove();
     // setIsReadyCapture(false)
   };
+  const applyRegularSchedule = () => {
+    schedule.map(
+      (schedule, index) => schedule.schedules.map(
+        item => {
+          const start = moment(item.start).format('HH:mm')
+          const end = moment(item.end).format('HH:mm')
+          dayList[index].map(async (date) => {
+            try {
+              const res = await db.collection('Schedule').add({
+                startDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${start}`).toDate(),
+                endDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${end}`).toDate(),
+                title: "",
+                targetStudent: db.collection('Student').doc(studentInfo.id)
+              })
+              console.log(res)
+            } catch (err) {
+              console.error(err)
+            }
+          })
 
-  const splitSchedule = () => {
-    /**
-     * 09:00 = 540
-     * 13:00 = 780
-     * 13:30 = 810
-     * 17:30 = 1050
-     * 18:00 = 1080
-     * 22:00 = 1320
-     */
-    schedule.forEach((daySchedule) => {
-      if (!daySchedule.use) return
-      const start = getMinutes(moment(daySchedule.startTM).format('HH:mm').toString())
-      const end = getMinutes(moment(daySchedule.endTM).format('HH:mm').toString())
-      console.log(start, end)
+          // console.log('done')
 
-      if(start < 780) {
-        const morningSchedule = {
-          start,
-          end: end > 780 ? 780 : end
+          return true
         }
-        console.log('morning', morningSchedule)
-      }
+      )
+    )
 
-      if(start < 810 && end > 1050) {
-        const afternoonSchedule = {
-          start: start < 810 ? 810 : start,
-          end: end > 1050 ? 1050 : end
-        }
-        console.log('morning', afternoonSchedule)
-      }
-
-      // if()
-    })
+    console.log('done')
   }
-
   return (
     <Page>
       <Container>
@@ -267,17 +233,31 @@ export default function Detail() {
                 >
                   <CardContent>
                     <RegularSchedule
-                      schedule={schedule}
-                      handleClickDay={handleClickDay}
-                      handleClickTime={handleClickTime}
+                      schedules={schedule}
+                      studentInfo={studentInfo}
+                      onChangeSchedule={(data) => setSchedule(data)}
                     />
-                    <Button
-                      fullWidth
-                      variant='contained'
-                      onClick={() => splitSchedule()}
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: 4
+                      }}
                     >
-                      반영하기
-                    </Button>
+                      <Button
+                        fullWidth
+                        variant='contained'
+                        onClick={() => updateSchedule()}
+                      >
+                        저장하기
+                      </Button>
+                      <Button
+                        fullWidth
+                        variant='contained'
+                        onClick={() => applyRegularSchedule()}
+                      >
+                        반영하기
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </Grid>
@@ -291,6 +271,7 @@ export default function Detail() {
                 <CardContent>
                   <h2>{studentInfo.name}</h2>
                   <Calendar 
+                    setDayList={setDayList}
                     studentInfo={studentInfo}
                     setBillItems={setBillItems}
                     selectedYearMonth={selectedYearMonth}
