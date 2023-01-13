@@ -10,6 +10,7 @@ import moment from 'moment'
 import ScheduleAddingModal from './ScheduleAddingModal';
 import ScheduleModifyModal from './ScheduleModifyModal';
 import { db } from '../firebase'
+
 const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMonth, setSelectedYearMonth, setDayList }, ref) => {
   const [modalOpen, setModalOpen] = React.useState(false)
   const [schedule, setSchedule] = React.useState([])
@@ -20,6 +21,10 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
   })
 
   const [selectedSchedule, setSelectedSchedule] = React.useState({})
+
+  React.useImperativeHandle(ref, () => {
+    
+  })
 
   React.useEffect(() => {
     calculateMonthlyPrice()
@@ -223,7 +228,7 @@ const Container = styled.div`
 
   }
   & .fc-daygrid-day-frame{
-    overflow: scroll;
+    /* overflow: scroll; */
 
     &:hover {
       background-color: #eee;
