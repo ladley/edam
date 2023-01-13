@@ -131,6 +131,25 @@ export default function Detail() {
   //   if(isReadyCapture) downloadImage()
   // }, [isReadyCapture])
 
+  const handleClickSaveAsImage = () => {
+    const hideElements = document.getElementsByClassName('hide-on-capture')
+
+    for (let i = 0; i < hideElements.length; i+= 1)
+      hideElements[i].style.display = 'none'
+
+    const headerElement = document.getElementsByClassName('fc-header-toolbar')[0]
+
+    const headerBtns = headerElement.children[headerElement.childNodes.length - 1];
+    headerBtns.style = 'display:none;'
+
+    exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)
+
+
+    headerBtns.style = 'display:block;'
+    for (let i = 0; i < hideElements.length; i+= 1)
+      hideElements[i].style.display = 'block'
+  }
+
   const exportAsImage = async (el, imageFileName) => {
     const canvas = await html2canvas(el);
     const image = canvas.toDataURL("image/png", 1.0);
@@ -155,34 +174,45 @@ export default function Detail() {
     fakeLink.remove();
     // setIsReadyCapture(false)
   };
+
   const applyRegularSchedule = () => {
-    schedule.map(
+    const batch = db.batch()
+    const scheduleMapRes = schedule.map(
       (schedule, index) => schedule.schedules.map(
         item => {
           const start = moment(item.start).format('HH:mm')
           const end = moment(item.end).format('HH:mm')
-          dayList[index].map(async (date) => {
-            try {
-              const res = await db.collection('Schedule').add({
-                startDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${start}`).toDate(),
-                endDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${end}`).toDate(),
-                title: "",
-                targetStudent: db.collection('Student').doc(studentInfo.id)
-              })
-              console.log(res)
-            } catch (err) {
-              console.error(err)
+          const mapRes = dayList[index].map((date) => {
+            const docRef = db.collection('Schedule').doc()
+            const data =  {
+              startDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${start}`).toDate(),
+              endDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${end}`).toDate(),
+              title: "",
+              targetStudent: db.collection('Student').doc(studentInfo.id)
             }
+            batch.set(docRef, data)
+            return true
+            // try {
+            //   const res = await db.collection('Schedule').add({
+            //     startDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${start}`).toDate(),
+            //     endDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${end}`).toDate(),
+            //     title: "",
+            //     targetStudent: db.collection('Student').doc(studentInfo.id)
+            //   })
+            //   // console.log(res)
+            // } catch (err) {
+            //   console.error(err)
+            // }
           })
 
-          // console.log('done')
+          // console.log(mapRes)
 
-          return true
+          return mapRes
         }
       )
     )
-
-    console.log('done')
+    batch.commit()
+        
   }
   return (
     <Page>
@@ -295,25 +325,7 @@ export default function Detail() {
                 style={{ marginTop: 8 }}
                 fullWidth
                 variant='contained'
-                onClick={() => {
-
-                  const hideElements = document.getElementsByClassName('hide-on-capture')
-
-                  for (let i = 0; i < hideElements.length; i+= 1)
-                    hideElements[i].style.display = 'none'
-
-                  const headerElement = document.getElementsByClassName('fc-header-toolbar')[0]
-
-                  const headerBtns = headerElement.children[headerElement.childNodes.length - 1];
-                  headerBtns.style = 'display:none;'
-
-                  exportAsImage(exportRef.current, `${studentInfo.name}-${selectedYearMonth.month}-${selectedYearMonth.year}`)
-
-
-                  headerBtns.style = 'display:block;'
-                  for (let i = 0; i < hideElements.length; i+= 1)
-                    hideElements[i].style.display = 'block'
-                }}
+                onClick={() => handleClickSaveAsImage()}
               >
                 이미지로 저장하기
               </Button>

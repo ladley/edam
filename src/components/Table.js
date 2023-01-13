@@ -123,19 +123,6 @@ export default function DenseTable({ classBill, month, year, targetId }) {
 
   const updateBill = async () => {
     try {
-      // const billQueryRes = await db.collection('Bill')
-      //   .where('student', '==', db.collection('Student').doc(targetId))
-      //   .where('year', '==', year)
-      //   .where('month', '==', month)
-      //   .get()
-      // let id = ''
-      // if (billQueryRes.empty) {
-      //   const res = await db.collection('Bill').add({})
-      //   id = res.id
-      // }
-      // else {
-      //   id = billQueryRes.docs[0].id
-      // }
       if(!billId) return
       await db.collection('Bill').doc(billId).update({
         billPrice,
