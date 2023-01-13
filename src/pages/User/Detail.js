@@ -32,15 +32,7 @@ export default function Detail() {
   const [loadSchedule, setLoadSchedule] = React.useState(false)
   const [schedule, setSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
-  const [dayList, setDayList] = React.useState([
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-  ])
+  const [dayList, setDayList] = React.useState([[], [], [], [], [], [], []])
   const [selectedYearMonth, setSelectedYearMonth] = React.useState({
     month: String(monthNames[new Date().getMonth()]),
     year: String(new Date().getFullYear()),
@@ -57,9 +49,36 @@ export default function Detail() {
   }, [])
 
   React.useEffect(() => {
+    const daysOfThisYM =  getDatesInMonth(
+      Number(selectedYearMonth.year),
+      new Date(`${selectedYearMonth.month} 1, 2000`).getMonth() + 1
+    )
+    daysOfThisYM.forEach((day) => {
+      // setDayList(prev => 
+      //   ...prev,
+      //   [
+      //   ...prev.slice(0, day),
+      //   [ ...prev[day], date],
+      //   ...prev.slice(day + 1)
+      // ])
+      // console.log(moment(day).day(), moment(day).date())
+    })
+    // console.log(sortByDay)
+  }, [selectedYearMonth])
+  React.useEffect(() => {
     // console.log(regularSchedule)
     // updateSchedule()
   }, [schedule])
+
+  function getDatesInMonth(year, month) {
+    const date = new Date(year, month - 1, 1);
+    const days = [];
+    while (date.getMonth() === month - 1) {
+      days.push(new Date(date));
+      date.setDate(date.getDate() + 1);
+    }
+    return days;
+  }
 
   const fetchInformation = async () => {
     try {
@@ -95,15 +114,6 @@ export default function Detail() {
       console.error('error occured in updateSchdule function', e)
     }
   }
-  const getMinutes = (string) => {
-    const split = String(string).split(':')
-    const hours = split[0]
-    let minutes = Number(split[1])
-
-    minutes += Number(hours * 60)
-
-    return (minutes)
-  }
   const fetchRegularSchedules = async () => {
     try {
       const res = await
@@ -128,10 +138,6 @@ export default function Detail() {
   }
 
   const getDisplayableBirth = (val) => val.toDate().toISOString().split('T')[0]
-
-  // React.useState(() => {
-  //   if(isReadyCapture) downloadImage()
-  // }, [isReadyCapture])
 
   const handleClickSaveAsImage = () => {
     const hideElements = document.getElementsByClassName('hide-on-capture')
@@ -194,21 +200,7 @@ export default function Detail() {
             }
             batch.set(docRef, data)
             return true
-            // try {
-            //   const res = await db.collection('Schedule').add({
-            //     startDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${start}`).toDate(),
-            //     endDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${end}`).toDate(),
-            //     title: "",
-            //     targetStudent: db.collection('Student').doc(studentInfo.id)
-            //   })
-            //   // console.log(res)
-            // } catch (err) {
-            //   console.error(err)
-            // }
           })
-
-          // console.log(mapRes)
-
           return mapRes
         }
       )
