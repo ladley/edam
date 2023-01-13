@@ -22,9 +22,11 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
 
   const [selectedSchedule, setSelectedSchedule] = React.useState({})
 
-  React.useImperativeHandle(ref, () => {
-    
-  })
+  React.useImperativeHandle(ref, () => ({
+     callFetchSchedule() {
+      fetchSchedule()
+     }
+  }))
 
   React.useEffect(() => {
     calculateMonthlyPrice()

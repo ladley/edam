@@ -45,6 +45,8 @@ export default function Detail() {
     month: String(monthNames[new Date().getMonth()]),
     year: String(new Date().getFullYear()),
   })
+  const calendarRef = React.useRef()
+
   const { pathname } = useLocation()
   const documentId = pathname.slice(pathname.lastIndexOf('/') + 1, pathname.length)
   const exportRef = React.useRef()
@@ -212,7 +214,7 @@ export default function Detail() {
       )
     )
     batch.commit()
-        
+    calendarRef.current.callFetchSchedule()
   }
   return (
     <Page>
@@ -300,7 +302,8 @@ export default function Detail() {
               <Card>
                 <CardContent>
                   <h2>{studentInfo.name}</h2>
-                  <Calendar 
+                  <Calendar
+                    ref={calendarRef}
                     setDayList={setDayList}
                     studentInfo={studentInfo}
                     setBillItems={setBillItems}
