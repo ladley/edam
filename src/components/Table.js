@@ -36,6 +36,7 @@ export default function DenseTable({ classBill, month, year, targetId }) {
     price: 0,
     each: 0,
     month,
+    year,
     student: undefined
   })
 
@@ -110,6 +111,7 @@ export default function DenseTable({ classBill, month, year, targetId }) {
     try {
       const res = await db.collection('Material').add({})
       const id = res.id
+      console.log(id)
       await db.collection('Material').doc(id).set({
         ...addMaterialData,
         id: res.id,
@@ -142,7 +144,7 @@ export default function DenseTable({ classBill, month, year, targetId }) {
       name: '',
       price: 0,
       each: 0,
-      month
+      month, year
     })
     setIsAddMode(false)
     fetchMaterials()
