@@ -68,9 +68,9 @@ export default function Register() {
           <Logo />
           {smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
-              Already have an account? {''}
+              이미 계정이 있으시다면 {''}
               <Link variant="subtitle2" component={RouterLink} to="/login">
-                Login
+                로그인
               </Link>
             </Typography>
           )}
@@ -113,9 +113,9 @@ export default function Register() {
 
             {!smUp && (
               <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
-                Already have an account?{' '}
+                이미 계정이 있으시다면{' '}
                 <Link variant="subtitle2" to="/login" component={RouterLink}>
-                  Login
+                  로그인
                 </Link>
               </Typography>
             )}
