@@ -69,9 +69,9 @@ export default function Login() {
 
           {smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
-              Don’t have an account? {''}
+              계정이 없으신가요? {''}
               <Link variant="subtitle2" component={RouterLink} to="/register">
-                Get started
+                회원가입
               </Link>
             </Typography>
           )}
@@ -80,7 +80,7 @@ export default function Login() {
         {mdUp && (
           <SectionStyle>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
+              로그인 페이지
             </Typography>
             <img src="/static/illustrations/illustration_login.png" alt="login" />
           </SectionStyle>
@@ -89,10 +89,10 @@ export default function Login() {
         <Container maxWidth="sm">
           <ContentStyle>
             <Typography variant="h4" gutterBottom>
-              Sign in to Minimal
+              서비스에 로그인하세요
             </Typography>
 
-            <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter your details below.</Typography>
+            <Typography sx={{ color: 'text.secondary', mb: 5 }}>아래 제공해드리는 로그인 서비스 중 선택하여 로그인해주세요.</Typography>
 
             <AuthSocial />
 
@@ -100,9 +100,9 @@ export default function Login() {
 
             {!smUp && (
               <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                Don’t have an account?{' '}
+                아직 계정이 없으신가요?{' '}
                 <Link variant="subtitle2" component={RouterLink} to="/register">
-                  Get started
+                  회원가입
                 </Link>
               </Typography>
             )}

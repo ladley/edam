@@ -19,8 +19,8 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required'),
+    email: Yup.string().email('올바른 이메일을 입력해주세요').required('이메일을 입력해주세요'),
+    password: Yup.string().min(6, '비밀번호는 6자이상입니다.').required('패스워드를 입력해주세요'),
   });
 
   const defaultValues = {
@@ -39,18 +39,19 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
+
     navigate('/dashboard', { replace: true });
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <RHFTextField name="email" label="Email address" />
+        <RHFTextField name="email" label="메일 주소" />
 
         <RHFTextField
           name="password"
-          label="Password"
+          label="비밀번호"
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -65,14 +66,14 @@ export default function LoginForm() {
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <RHFCheckbox name="remember" label="Remember me" />
+        <RHFCheckbox name="remember" label="로그인정보 기억하기" />
         <Link variant="subtitle2" underline="hover">
-          Forgot password?
+          비밀번호를 잊으셨나요?
         </Link>
       </Stack>
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-        Login
+        로그인
       </LoadingButton>
     </FormProvider>
   );
