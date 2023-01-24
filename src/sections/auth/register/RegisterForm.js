@@ -19,10 +19,10 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required'),
+    firstName: Yup.string().required('이름을 입력해주세요'),
+    lastName: Yup.string().required('성을 입력해주세요'),
+    email: Yup.string().email('올바른 메일 주소를 입력해주세요').required('e메일 주소를 입력해주세요'),
+    password: Yup.string().required('비밀번호를 입력해주세요'),
   });
 
   const defaultValues = {
@@ -50,15 +50,15 @@ export default function RegisterForm() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
+          <RHFTextField name="firstName" label="이름" />
+          <RHFTextField name="lastName" label="성" />
         </Stack>
 
-        <RHFTextField name="email" label="Email address" />
+        <RHFTextField name="email" label="메일 주소" />
 
         <RHFTextField
           name="password"
-          label="Password"
+          label="비밀번호"
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
@@ -72,7 +72,7 @@ export default function RegisterForm() {
         />
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-          Register
+          가입하기
         </LoadingButton>
       </Stack>
     </FormProvider>

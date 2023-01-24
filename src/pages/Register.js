@@ -79,7 +79,7 @@ export default function Register() {
         {mdUp && (
           <SectionStyle>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Manage the job more effectively with Minimal
+              메일, 구글계정 등을 통해 간편하게 가입해보세요
             </Typography>
             <img alt="register" src="/static/illustrations/illustration_register.png" />
           </SectionStyle>
@@ -88,16 +88,18 @@ export default function Register() {
         <Container>
           <ContentStyle>
             <Typography variant="h4" gutterBottom>
-              Get started absolutely free.
+              무료로 시작하세요
             </Typography>
 
-            <Typography sx={{ color: 'text.secondary', mb: 5 }}>Free forever. No credit card needed.</Typography>
+            <Typography sx={{ color: 'text.secondary', mb: 5 }}>
+              운영에 필요한 기능을 무료로 사용해보세요.
+            </Typography>
 
             <AuthSocial />
 
             <RegisterForm />
 
-            <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
+            {/* <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
               By registering, I agree to Minimal&nbsp;
               <Link underline="always" color="text.primary" href="#">
                 Terms of Service
@@ -107,7 +109,7 @@ export default function Register() {
                 Privacy Policy
               </Link>
               .
-            </Typography>
+            </Typography> */}
 
             {!smUp && (
               <Typography variant="body2" sx={{ mt: 3, textAlign: 'center' }}>
