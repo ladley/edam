@@ -10,6 +10,7 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
+import { auth } from '../../../firebase'
 
 // ----------------------------------------------------------------------
 
@@ -19,15 +20,15 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('이름을 입력해주세요'),
-    lastName: Yup.string().required('성을 입력해주세요'),
+    // firstName: Yup.string().required('이름을 입력해주세요'),
+    // lastName: Yup.string().required('성을 입력해주세요'),
     email: Yup.string().email('올바른 메일 주소를 입력해주세요').required('e메일 주소를 입력해주세요'),
-    password: Yup.string().required('비밀번호를 입력해주세요'),
+    password: Yup.string().min(6, '최소 6자이상 입력해주세요').required('비밀번호를 입력해주세요'),
   });
 
   const defaultValues = {
-    firstName: '',
-    lastName: '',
+    // firstName: '',
+    // lastName: '',
     email: '',
     password: '',
   };
@@ -42,17 +43,26 @@ export default function RegisterForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
-    navigate('/dashboard', { replace: true });
+  const onSubmit = async ({ email, password }) => {
+    // console.log(data)
+    // navigate('/dashboard', { replace: true });
+    try {
+      const registRes = await auth.createUserWithEmailAndPassword(email, password)
+      console.log(registRes)
+      console.log(registRes.user)
+      if(registRes.user) navigate('/dashboard/app')
+    } catch(e) {
+      console.error(e.code, e.message)
+    }
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        {/* <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
           <RHFTextField name="firstName" label="이름" />
           <RHFTextField name="lastName" label="성" />
-        </Stack>
+        </Stack> */}
 
         <RHFTextField name="email" label="메일 주소" />
 
@@ -71,7 +81,7 @@ export default function RegisterForm() {
           }}
         />
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting} >
           가입하기
         </LoadingButton>
       </Stack>
