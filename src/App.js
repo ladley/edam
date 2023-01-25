@@ -22,9 +22,10 @@ export default function App() {
   }, [user])
 
   React.useEffect(() => {
-    auth.onAuthStateChanged(user => {
-      if(user) {
-        setUser(user)
+    auth.onAuthStateChanged((userCredential) => {
+      if(userCredential) {
+        setUser(userCredential.multiFactor.user)
+        fetchAcademyInfo(userCredential.uid)
       }
       else {
         setUser(null)
@@ -41,8 +42,10 @@ export default function App() {
     if(user && isLoginPage) navigate('/dashboard/app')
   }, [location])
 
-  const fetchAcademyInfo = () => {
-    const academyFetchRes = db.collection('')
+  const fetchAcademyInfo = async (uid) => {
+    const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', 'kq7A14Og9vhXLUtg1A1pJp8pkAh2').get()
+    if(academyFetchRes)
+      academyFetchRes.forEach((doc) => console.log(doc.id, doc.data()))
   }
 
   return (
