@@ -1,6 +1,6 @@
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 // routes
-import React from 'react';
 import Router from './routes';
 // theme
 import ThemeProvider from './theme';
@@ -8,7 +8,7 @@ import ThemeProvider from './theme';
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 // import { db } from "./firebase";
-import { auth } from './firebase';
+import { auth, db } from './firebase';
 
 // ----------------------------------------------------------------------
 
@@ -18,9 +18,18 @@ export default function App() {
   const location = useLocation()
 
   React.useEffect(() => {
+    console.log(user)
+  }, [user])
+
+  React.useEffect(() => {
     auth.onAuthStateChanged(user => {
-      if(user) setUser(user)
-      else setUser(null)
+      if(user) {
+        setUser(user)
+      }
+      else {
+        setUser(null)
+        navigate('/login')
+      }
     })
   }, [])
 
@@ -31,6 +40,10 @@ export default function App() {
 
     if(user && isLoginPage) navigate('/dashboard/app')
   }, [location])
+
+  const fetchAcademyInfo = () => {
+    const academyFetchRes = db.collection('')
+  }
 
   return (
     <ThemeProvider>

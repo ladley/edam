@@ -48,7 +48,6 @@ export default function AccountPopover() {
   const logout = () => {
     auth.signOut()
     handleClose()
-    navigate('/login')
   }
 
   return (
