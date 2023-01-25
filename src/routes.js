@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
@@ -13,10 +15,10 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
-
 // ----------------------------------------------------------------------
 
 export default function Router() {
+
   return useRoutes([
     {
       path: '/dashboard',
