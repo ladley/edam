@@ -215,7 +215,7 @@ export default function Detail() {
           <Typography variant="h4" gutterBottom>
             학생 상세페이지
           </Typography>
-          <Button variant="contained" component={RouterLink} to="/dashboard/user/add" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" component={RouterLink} to="/dashboard/student/add" startIcon={<Iconify icon="eva:plus-fill" />}>
             학생 추가하기
           </Button>
         </Stack>

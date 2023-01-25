@@ -13,6 +13,11 @@ const navConfig = [
   },
   {
     title: '학생관리',
+    path: '/dashboard/student',
+    icon: getIcon('eva:people-fill'),
+  },
+  {
+    title: '학원관리',
     path: '/dashboard/user',
     icon: getIcon('eva:people-fill'),
   },

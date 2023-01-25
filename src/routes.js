@@ -25,12 +25,11 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
-        { path: 'user/add', element: <UserAdd /> },
-        { path: 'user/:sequence', element: <UserDetail /> },
+        { path: 'student', element: <User /> },
+        { path: 'student/add', element: <UserAdd /> },
+        { path: 'student/:sequence', element: <UserDetail /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
-        { path: 'calendar', element: <Calendar /> },
       ],
     },
     {
