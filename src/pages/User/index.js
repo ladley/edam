@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { filter } from 'lodash';
-// import { sentenceCase } from 'change-case';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material
@@ -8,7 +7,6 @@ import {
   Card,
   Table,
   Stack,
-  // Avatar,
   Button,
   Checkbox,
   TableRow,
@@ -21,24 +19,17 @@ import {
 } from '@mui/material';
 // components
 import Page from '../../components/Page';
-// import Label from '../components/Label';
 import Scrollbar from '../../components/Scrollbar';
 import Iconify from '../../components/Iconify';
 import SearchNotFound from '../../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../../sections/@dashboard/user';
 import { db } from '../../firebase'
 import { DEFAULT_REGULAR_SCHEDULE } from './Add';
-// mock
-// import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'company', label: 'Company', alignRight: false },
-  // { id: 'role', label: 'Role', alignRight: false },
-  // { id: 'isVerified', label: 'Verified', alignRight: false },
-  // { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
 
@@ -105,8 +96,14 @@ export default function User() {
         // console.log('정기 스케줄 없음',doc.data().name)
         await db.collection('Student').doc(doc.id).set({
           regularSchedule: DEFAULT_REGULAR_SCHEDULE
-        }, { merge: true})
+        }, { merge: true })
       }
+
+      // if(!doc.data().targetAcademy === ""){
+      //   await db.collection('Student').doc(doc.id).set({
+      //     targetAcademy: db.collection('Academy').doc('yyR7gqQzWOsUvKVXKsqZ')
+      //   }, { merge: true })
+      // }
 
       setStudents(prev => [...prev, {...doc.data(), id: doc.id}])
     })
