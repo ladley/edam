@@ -9,17 +9,12 @@ import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 // import { db } from "./firebase";
 import { auth, db } from './firebase';
-
 // ----------------------------------------------------------------------
 
 export default function App() {
   const [user, setUser] = React.useState({})
   const navigate = useNavigate()
   const location = useLocation()
-
-  // React.useEffect(() => {
-  //   console.log(user)
-  // }, [user])
 
   React.useEffect(() => {
     auth.onAuthStateChanged((userCredential) => {
@@ -44,7 +39,7 @@ export default function App() {
 
   const fetchAcademyInfo = async (uid) => {
     const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', uid).get()
-    console.log(academyFetchRes)
+    // console.log(academyFetchRes)
     if(academyFetchRes.docs.length)
       academyFetchRes.forEach((doc) => console.log(doc.id, doc.data()))
     else console.log('there\'s no academy for this user')
