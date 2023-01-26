@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Box, Button, Card, CardContent, Divider, TextField } from '@mui/material';
 
-import { db } from '../../firebase'
+import { db, auth } from '../../firebase'
 
 const startOfToday = new Date()
 startOfToday.setHours(0)
@@ -68,8 +68,17 @@ export default function Add() {
   const [phone, setPhone] = React.useState('')
   const navigate = useNavigate()
 
+  React.useEffect( () => {
+    console.log(auth.currentUser.uid)
+  }, [])
+
   const handleAddStudent = async () => {
     try {
+      const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
+      let academyId = ''
+      if(academyRes.docs.length)
+        academyRes.forEach((doc) => { academyId = doc.id })
+      
       const res = await db.collection('Student').add({})
 
       console.log('student added..', res)
@@ -77,7 +86,9 @@ export default function Add() {
 
       const addDataRes = await db.collection('Student').doc(addedStudentId).set({
         id: addedStudentId,
-        regularSchedule: DEFAULT_REGULAR_SCHEDULE, name, birth, phone
+        regularSchedule: DEFAULT_REGULAR_SCHEDULE,
+        targetAcademy: db.collection('Academy').doc(academyId),
+        name, birth, phone
       })
 
       console.log('data add success:', addDataRes)
