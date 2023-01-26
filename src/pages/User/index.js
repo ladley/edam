@@ -23,7 +23,7 @@ import Scrollbar from '../../components/Scrollbar';
 import Iconify from '../../components/Iconify';
 import SearchNotFound from '../../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../../sections/@dashboard/user';
-import { db } from '../../firebase'
+import { db, auth } from '../../firebase'
 import { DEFAULT_REGULAR_SCHEDULE } from './Add';
 
 // ----------------------------------------------------------------------
@@ -83,13 +83,24 @@ export default function User() {
   useEffect(() => {
     console.log('students changed: ', students);
   }, [students])
+
   useEffect(() => {
     fetchStudentList()
   }, [])
 
   const fetchStudentList = async () => {
+    console.log(auth.currentUser)
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
+    let academyId = ''
+    if(academyRes.docs.length)
+     academyRes.forEach((doc) => { academyId = doc.id })
+
+    console.log(academyId)
     setStudents([])
-    const res = await db.collection('Student').get()
+    const res = await db
+      .collection('Student')
+      .where('targetAcademy', '==', db.collection('Academy').doc(academyId))
+      .get()
     // if(res.exist)
     res.forEach(async (doc) => {
       if(!doc.data().regularSchedule){
@@ -108,6 +119,11 @@ export default function User() {
       setStudents(prev => [...prev, {...doc.data(), id: doc.id}])
     })
   }
+
+  // const getAcademyId = async () => {
+
+  //     return academyId
+  // }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
