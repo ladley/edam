@@ -18,7 +18,7 @@ const navConfig = [
   },
   {
     title: '학원관리',
-    path: '/dashboard/user',
+    path: '/dashboard/academy',
     icon: getIcon('eva:people-fill'),
   },
   // {
