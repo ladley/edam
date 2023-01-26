@@ -17,9 +17,9 @@ export default function App() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  React.useEffect(() => {
-    console.log(user)
-  }, [user])
+  // React.useEffect(() => {
+  //   console.log(user)
+  // }, [user])
 
   React.useEffect(() => {
     auth.onAuthStateChanged((userCredential) => {
