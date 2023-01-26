@@ -43,9 +43,11 @@ export default function App() {
   }, [location])
 
   const fetchAcademyInfo = async (uid) => {
-    const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', 'kq7A14Og9vhXLUtg1A1pJp8pkAh2').get()
-    if(academyFetchRes)
+    const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', uid).get()
+    console.log(academyFetchRes)
+    if(academyFetchRes.docs.length)
       academyFetchRes.forEach((doc) => console.log(doc.id, doc.data()))
+    else console.log('there\'s no academy for this user')
   }
 
   return (
