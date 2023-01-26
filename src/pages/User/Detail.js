@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useLocation, Link as RouterLink } from 'react-router-dom';
+import { useLocation, Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Grid,
   Card,
@@ -37,6 +37,8 @@ export default function Detail() {
     month: String(monthNames[new Date().getMonth()]),
     year: String(new Date().getFullYear()),
   })
+
+  const navigate = useNavigate()
   const calendarRef = React.useRef()
 
   const { pathname } = useLocation()
@@ -208,6 +210,17 @@ export default function Detail() {
     batch.commit()
     calendarRef.current.callFetchSchedule()
   }
+
+  const deleteStudent = async () => {
+    try {
+
+      await db.collection('Student').doc(studentInfo.id).delete()
+
+      navigate('/dashboard/student')
+    } catch(e) {
+      console.error(e.code, e.message)
+    }
+  }
   return (
     <Page>
       <Container>
@@ -215,9 +228,19 @@ export default function Detail() {
           <Typography variant="h4" gutterBottom>
             학생 상세페이지
           </Typography>
-          <Button variant="contained" component={RouterLink} to="/dashboard/student/add" startIcon={<Iconify icon="eva:plus-fill" />}>
-            학생 추가하기
-          </Button>
+          <div style={{ gap: 4, display: 'flex' }}>
+            <Button variant="contained" component={RouterLink} to="/dashboard/student/add" startIcon={<Iconify icon="material-symbols:edit-document" />}>
+              수정하기
+            </Button>
+            <Button 
+              variant="contained"
+              color='error'
+              startIcon={<Iconify icon="material-symbols:delete-forever-rounded" />}
+              onClick={() => deleteStudent()}
+            >
+              삭제하기
+            </Button>
+          </div>
         </Stack>
         <Grid container spacing={2}>
           <Grid item md={4} xs={12}>
