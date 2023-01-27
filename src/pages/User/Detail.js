@@ -269,6 +269,12 @@ export default function Detail() {
                     <Typography variant="body6">
                       { studentInfo.birth && getDisplayableBirth(studentInfo.birth) }
                     </Typography>
+                    <Typography sx={{ mt: 2 }} variant="h6">
+                      수업료
+                    </Typography>
+                    <Typography variant="body6">
+                      { studentInfo.price && Number(studentInfo.price).toLocaleString('ko-KR') || 0 } / 시간
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>

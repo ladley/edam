@@ -90,7 +90,7 @@ export default function Add() {
         regularSchedule: DEFAULT_REGULAR_SCHEDULE,
         targetAcademy: db.collection('Academy').doc(academyId),
         registerDT: new Date(),
-        name, birth, phone
+        name, birth, phone, price
       })
 
       console.log('data add success:', addDataRes)
@@ -124,6 +124,15 @@ export default function Add() {
               fullWidth
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+            />
+            <TextField
+              label="시간당 수업료"
+              tyle="number"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker

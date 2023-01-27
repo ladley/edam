@@ -66,6 +66,7 @@ export default function Add() {
   const [name, setName] = React.useState('')
   const [birth, setBirth] = React.useState(new Date())
   const [phone, setPhone] = React.useState('')
+  const [price, setPrice] = React.useState(0)
   const navigate = useNavigate()
   const location = useLocation()
   React.useEffect(() => {
@@ -78,9 +79,10 @@ export default function Add() {
       const studentInfo = await db.collection('Student').doc(studentDocId).get()
 
       if (studentInfo.exists) {
-        setName(studentInfo.data().name)
-        setPhone(studentInfo.data().phone)
-        setBirth(new Date(studentInfo.data().birth.seconds * 1000))
+        setName(studentInfo.data().name || '')
+        setPhone(studentInfo.data().phone || '')
+        setPrice(studentInfo.data().price || 0)
+        setBirth(studentInfo.data().birth ? new Date(studentInfo.data().birth.seconds * 1000) : new Date())
       }
     } catch (e) {
       console.error(e)
@@ -93,7 +95,7 @@ export default function Add() {
       const studentDocId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
 
       await db.collection('Student').doc(studentDocId).update({
-        name, birth, phone
+        name, birth, phone, price
       })
 
       console.log('data update success')
@@ -127,6 +129,15 @@ export default function Add() {
               fullWidth
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+            />
+            <TextField
+              label="시간당 수업료"
+              tyle="number"
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
