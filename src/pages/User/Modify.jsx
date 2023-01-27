@@ -9,7 +9,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 
 import { Box, Button, Card, CardContent, Divider, TextField } from '@mui/material';
 
-import { db, auth } from '../../firebase'
+import { db } from '../../firebase'
 
 const startOfToday = new Date()
 startOfToday.setHours(0)
