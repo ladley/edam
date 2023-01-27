@@ -80,9 +80,6 @@ export default function User() {
   const [students, setStudents] = useState([])
 
   const navigate = useNavigate()
-  // useEffect(() => {
-  //   console.log('students changed: ', students);
-  // }, [students])
 
   useEffect(() => {
     fetchStudentList()

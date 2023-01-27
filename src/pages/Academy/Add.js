@@ -11,11 +11,6 @@ import { Box, Button, Card, CardContent, Divider, TextField } from '@mui/materia
 
 import { db, auth } from '../../firebase'
 
-const startOfToday = new Date()
-startOfToday.setHours(0)
-startOfToday.setMinutes(0)
-startOfToday.setSeconds(0)
-
 export const DEFAULT_REGULAR_SCHEDULE = [
   {
     day: 'Sunday',
@@ -64,42 +59,35 @@ export const DEFAULT_REGULAR_SCHEDULE = [
 export default function Add() {
 
   const [name, setName] = React.useState('')
-  const [birth, setBirth] = React.useState(new Date())
-  const [phone, setPhone] = React.useState('')
-  const [admin, setAdmin] = React.useState('')
+  const [tel, setTel] = React.useState('')
+  const [address, setAddress] = React.useState('')
   const [registDT, setRegistDT] = React.useState(new Date())
   const [bankAccount, setbankAccount] = React.useState('')
-  
-
+  const [addMaterialData, setAddMaterialData] = React.useState({
+    name: '',
+    phone: 0,
+    admin: 0,
+    registDT: 0,
+    bankAccount: '',
+  })
   
   const navigate = useNavigate()
 
-  React.useEffect(() => {
-    console.log(auth.currentUser.uid)
-  }, [])
-
-  const handleAddStudent = async () => {
+  const handleAddAcademy = async () => {
     try {
-      const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
-      let academyId = ''
-      if (academyRes.docs.length)
-        academyRes.forEach((doc) => { academyId = doc.id })
+      const res = await db.collection('Academy').add({})
 
-      const res = await db.collection('Student').add({})
+      console.log('Academy added..', res)
+      const addeAcademyId = res.id
 
-      console.log('student added..', res)
-      const addedStudentId = res.id
-
-      const addDataRes = await db.collection('Student').doc(addedStudentId).set({
-        id: addedStudentId,
-        regularSchedule: DEFAULT_REGULAR_SCHEDULE,
-        targetAcademy: db.collection('Academy').doc(academyId),
-        name, birth, phone
+      const addAcademyRes = await db.collection('Academy').doc(addeAcademyId).set({
+        admin: [addeAcademyId],
+        name,tel, address, registDT, bankAccount
       })
 
-      console.log('data add success:', addDataRes)
+      console.log('data add success:', addAcademyRes)
 
-      navigate('/dashboard/student')
+      navigate('/dashboard/academy')
     } catch (e) {
       console.error(e)
     }
@@ -126,16 +114,17 @@ export default function Add() {
               variant="outlined"
               margin="normal"
               fullWidth
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={tel}
+              onChange={(e) => setTel(e.target.value)}
             />
+            
             <TextField
-              label="관리자"
+              label="주소"
               variant="outlined"
               margin="normal"
               fullWidth
-              value={admin}
-              onChange={(e) => setAdmin(e.target.value)}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
@@ -160,7 +149,7 @@ export default function Add() {
               style={{ margin: 8 }}
               fullWidth
               variant='contained'
-              onClick={() => handleAddStudent()}
+              onClick={() => handleAddAcademy()}
             >
               추가하기
             </Button>
