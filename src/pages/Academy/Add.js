@@ -80,8 +80,8 @@ export default function Add() {
       console.log('Academy added..', res)
       const addeAcademyId = res.id
 
-      const addAcademyRes = await db.collection('Academy').doc(addeAcademyId).set({
-        admin: [addeAcademyId],
+      const addAcademyRes = await db.collection('Academy').doc(auth.currentUser.uid).set({
+        admins: [auth.currentUser.uid],
         name,tel, address, registDT, bankAccount
       })
 
