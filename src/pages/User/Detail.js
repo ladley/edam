@@ -229,7 +229,7 @@ export default function Detail() {
             학생 상세페이지
           </Typography>
           <div style={{ gap: 4, display: 'flex' }}>
-            <Button variant="contained" component={RouterLink} to="/dashboard/student/add" startIcon={<Iconify icon="material-symbols:edit-document" />}>
+            <Button variant="contained" component={RouterLink} to={`/dashboard/student/modify/${studentInfo.id}`} startIcon={<Iconify icon="material-symbols:edit-document" />}>
               수정하기
             </Button>
             <Button 

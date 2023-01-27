@@ -10,6 +10,7 @@ import Blog from './pages/Blog';
 import User from './pages/User';
 import UserAdd from './pages/User/Add';
 import UserDetail from './pages/User/Detail';
+import UserModify from './pages/User/Modify';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
@@ -28,6 +29,7 @@ export default function Router() {
         { path: 'student', element: <User /> },
         { path: 'student/add', element: <UserAdd /> },
         { path: 'student/:sequence', element: <UserDetail /> },
+        { path: 'student/modify/:sequence', element: <UserModify /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
       ],
