@@ -66,6 +66,7 @@ export default function Add() {
   const [name, setName] = React.useState('')
   const [birth, setBirth]  = React.useState(new Date())
   const [phone, setPhone] = React.useState('')
+  const [price, setPrice] = React.useState(0)
   const navigate = useNavigate()
 
   React.useEffect( () => {
@@ -88,6 +89,7 @@ export default function Add() {
         id: addedStudentId,
         regularSchedule: DEFAULT_REGULAR_SCHEDULE,
         targetAcademy: db.collection('Academy').doc(academyId),
+        registerDT: new Date(),
         name, birth, phone
       })
 
