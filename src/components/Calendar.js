@@ -55,7 +55,7 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
       })
       setBillItems({
         name: '수업',
-        price: 11000,
+        price: studentInfo.price || 0,
         each: totalStudyTime,
       })
     }

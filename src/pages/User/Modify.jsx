@@ -5,11 +5,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 import { Box, Button, Card, CardContent, Divider, TextField } from '@mui/material';
 
-import { db, auth } from '../../firebase'
+import { db } from '../../firebase'
 
 const startOfToday = new Date()
 startOfToday.setHours(0)
@@ -64,39 +64,44 @@ export const DEFAULT_REGULAR_SCHEDULE = [
 export default function Add() {
 
   const [name, setName] = React.useState('')
-  const [birth, setBirth]  = React.useState(new Date())
+  const [birth, setBirth] = React.useState(new Date())
   const [phone, setPhone] = React.useState('')
   const [price, setPrice] = React.useState(0)
   const navigate = useNavigate()
-
-  React.useEffect( () => {
-    console.log(auth.currentUser.uid)
+  const location = useLocation()
+  React.useEffect(() => {
+    fetchStudent()
   }, [])
 
-  const handleAddStudent = async () => {
+  const fetchStudent = async () => {
     try {
-      const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
-      let academyId = ''
-      if(academyRes.docs.length)
-        academyRes.forEach((doc) => { academyId = doc.id })
-      
-      const res = await db.collection('Student').add({})
+      const studentDocId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+      const studentInfo = await db.collection('Student').doc(studentDocId).get()
 
-      console.log('student added..', res)
-      const addedStudentId = res.id
+      if (studentInfo.exists) {
+        setName(studentInfo.data().name || '')
+        setPhone(studentInfo.data().phone || '')
+        setPrice(studentInfo.data().price || 0)
+        setBirth(studentInfo.data().birth ? new Date(studentInfo.data().birth.seconds * 1000) : new Date())
+      }
+    } catch (e) {
+      console.error(e)
+    }
 
-      const addDataRes = await db.collection('Student').doc(addedStudentId).set({
-        id: addedStudentId,
-        regularSchedule: DEFAULT_REGULAR_SCHEDULE,
-        targetAcademy: db.collection('Academy').doc(academyId),
-        registerDT: new Date(),
+  }
+
+  const handleUpdateStudent = async () => {
+    try {
+      const studentDocId = location.pathname.slice(location.pathname.lastIndexOf('/') + 1)
+
+      await db.collection('Student').doc(studentDocId).update({
         name, birth, phone, price
       })
 
-      console.log('data add success:', addDataRes)
+      console.log('data update success')
 
-      navigate('/dashboard/student')
-    } catch(e) {
+      navigate(`/dashboard/student/${studentDocId}`)
+    } catch (e) {
       console.error(e)
     }
   }
@@ -105,7 +110,7 @@ export default function Add() {
     <Card>
       <CardContent>
         <Box>
-          <h1 style={{marginBottom: 12}}>학생 추가하기</h1>
+          <h1 style={{ marginBottom: 12 }}>{name} 학생 정보 수정</h1>
           <Divider />
           <FormWrap>
             <TextField
@@ -150,9 +155,9 @@ export default function Add() {
               style={{ margin: 8 }}
               fullWidth
               variant='contained'
-              onClick={() => handleAddStudent()}
+              onClick={() => handleUpdateStudent()}
             >
-              추가하기
+              수정하기
             </Button>
           </FormWrap>
         </Box>
