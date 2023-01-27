@@ -22,7 +22,7 @@ import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import Iconify from '../../components/Iconify';
 import SearchNotFound from '../../components/SearchNotFound';
-import { UserListHead, UserListToolbar, UserMoreMenu } from '../../sections/@dashboard/user';
+import { AcademyListHead, AcademyListToolbar } from '../../sections/@dashboard/academy';
 import { db, auth } from '../../firebase'
 import { DEFAULT_REGULAR_SCHEDULE } from './Add';
 
@@ -77,50 +77,23 @@ export default function User() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [students, setStudents] = useState([])
+  const [academy, setAcademy] = useState([])
 
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetchStudentList()
+    fetchAcademy()
   }, [])
 
-  const fetchStudentList = async () => {
-    console.log(auth.currentUser)
-    const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
-    let academyId = ''
+  const fetchAcademy = async () => {
+
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
     if(academyRes.docs.length)
-     academyRes.forEach((doc) => { academyId = doc.id })
-
-    console.log(academyId)
-    setStudents([])
-    const res = await db
-      .collection('Student')
-      .where('targetAcademy', '==', db.collection('Academy').doc(academyId))
-      .get()
-    // if(res.exist)
-    res.forEach(async (doc) => {
-      if(!doc.data().regularSchedule){
-        // console.log('정기 스케줄 없음',doc.data().name)
-        await db.collection('Student').doc(doc.id).set({
-          regularSchedule: DEFAULT_REGULAR_SCHEDULE
-        }, { merge: true })
-      }
-
-      // if(!doc.data().targetAcademy === ""){
-      //   await db.collection('Student').doc(doc.id).set({
-      //     targetAcademy: db.collection('Academy').doc('yyR7gqQzWOsUvKVXKsqZ')
-      //   }, { merge: true })
-      // }
-
-      setStudents(prev => [...prev, {...doc.data(), id: doc.id}])
-    })
+    // 한 계정에 2개 이상의 학원이 등록될 수 있다고 생각했는데, 애초에 firebase에 하나씩만 등록됌
+     academyRes.forEach((doc) => {
+      setAcademy(prev => [...prev, {...doc.data(), id: auth.currentUser.uid}])
+      })
   }
-
-  // const getAcademyId = async () => {
-
-  //     return academyId
-  // }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -130,7 +103,7 @@ export default function User() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = students.map((n) => n.name);
+      const newSelecteds = academy.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -165,9 +138,9 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - students.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - academy.length) : 0;
 
-  const filteredUsers = applySortFilter(students, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(academy, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
@@ -184,16 +157,16 @@ export default function User() {
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <AcademyListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <UserListHead
+                <AcademyListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={students.length}
+                  rowCount={academy.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -238,7 +211,7 @@ export default function User() {
                         </TableCell> */}
 
                         <TableCell align="right">
-                          <UserMoreMenu />
+                          {/* <UserMoreMenu /> */}
                         </TableCell>
                       </TableRow>
                     );
@@ -266,7 +239,7 @@ export default function User() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={students.length}
+            count={academy.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
