@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField } from '../../../components/hook-form';
-import { auth } from '../../../firebase'
+import { auth } from '../../../firebase';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +24,7 @@ export default function RegisterForm() {
     // lastName: Yup.string().required('성을 입력해주세요'),
     email: Yup.string().email('올바른 메일 주소를 입력해주세요').required('e메일 주소를 입력해주세요'),
     password: Yup.string().min(6, '최소 6자이상 입력해주세요').required('비밀번호를 입력해주세요'),
+    passwordChecker: Yup.string().min(6, '최소 6자이상 입력해주세요').required('비밀번호를 입력해주세요'),
   });
 
   const defaultValues = {
@@ -31,6 +32,7 @@ export default function RegisterForm() {
     // lastName: '',
     email: '',
     password: '',
+    passwordChecker: '',
   };
 
   const methods = useForm({
@@ -43,16 +45,20 @@ export default function RegisterForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async ({ email, password }) => {
+  const onSubmit = async ({ email, password, passwordChecker }) => {
     // console.log(data)
     // navigate('/dashboard', { replace: true });
+    if (password !== passwordChecker) {
+      window.alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
     try {
-      const registRes = await auth.createUserWithEmailAndPassword(email, password)
-      console.log(registRes)
-      console.log(registRes.user)
-      if(registRes.user) navigate('/dashboard/app')
-    } catch(e) {
-      console.error(e.code, e.message)
+      const registRes = await auth.createUserWithEmailAndPassword(email, password);
+      console.log(registRes);
+      console.log(registRes.user);
+      if (registRes.user) navigate('/dashboard/app');
+    } catch (e) {
+      console.error(e.code, e.message);
     }
   };
 
@@ -80,8 +86,22 @@ export default function RegisterForm() {
             ),
           }}
         />
+        <RHFTextField
+          name="passwordChecker"
+          label="비밀번호 확인"
+          type={showPassword ? 'text' : 'password'}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton edge="end" onClick={() => setShowPassword(!showPassword)}>
+                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting} >
+        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
           가입하기
         </LoadingButton>
       </Stack>
