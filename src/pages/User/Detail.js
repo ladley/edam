@@ -183,6 +183,31 @@ export default function Detail() {
     // setIsReadyCapture(false)
   };
 
+  const applySpecificDayRegSchedule = (day) => {
+    console.log(day)
+    const batch = db.batch()
+    schedule[day].schedules.map(
+      item => {
+        const start = moment(item.start).format('HH:mm')
+        const end = moment(item.end).format('HH:mm')
+        const mapRes = dayList[day].map((date) => {
+          const docRef = db.collection('Schedule').doc()
+          const data =  {
+            startDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${start}`).toDate(),
+            endDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${end}`).toDate(),
+            title: "",
+            targetStudent: db.collection('Student').doc(studentInfo.id)
+          }
+          batch.set(docRef, data)
+          return true
+        })
+        return mapRes
+      }
+    )
+    batch.commit()
+    calendarRef.current.callFetchSchedule()
+  }
+
   const applyRegularSchedule = () => {
     const batch = db.batch()
     const scheduleMapRes = schedule.map(
@@ -287,6 +312,7 @@ export default function Detail() {
                       schedules={schedule}
                       studentInfo={studentInfo}
                       onChangeSchedule={(data) => setSchedule(data)}
+                      applySchedule={applySpecificDayRegSchedule}
                     />
                     <div
                       style={{
@@ -305,8 +331,11 @@ export default function Detail() {
                         fullWidth
                         variant='contained'
                         onClick={() => applyRegularSchedule()}
+                        startIcon={
+                          <Iconify icon="fluent-mdl2:waitlist-confirm" />
+                        }
                       >
-                        반영하기
+                        전체 반영하기
                       </Button>
                     </div>
                   </CardContent>
