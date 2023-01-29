@@ -80,14 +80,15 @@ export default function User() {
 
   const fetchAcademy = async () => {
 
-    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
-    if(academyRes.docs.length)
-     academyRes.forEach((doc) => {
-      setAcademy(prev => [...prev, {
-        ...doc.data(),
-         id: doc.id
-      }])
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
+    if (academyRes.docs.length)
+      academyRes.forEach((doc) => {
+        setAcademy(prev => [...prev, {
+          ...doc.data(),
+          id: doc.id
+        }])
       })
+    else navigate('/dashboard/academy/add')
   }
 
   const handleRequestSort = (event, property) => {
