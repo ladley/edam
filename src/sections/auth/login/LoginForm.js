@@ -42,13 +42,7 @@ export default function LoginForm() {
   const onSubmit = async (data) => {
     try {
       const loginRes = await auth.signInWithEmailAndPassword(data.email, data.password)
-      console.log(loginRes)
-      if(loginRes){
-        const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', loginRes.user.uid).get()
-      if(academyFetchRes.docs.length) navigate('/dashboard/app')
-      else navigate('/dashboard/academy/add')
-      }
-
+      if(loginRes) navigate('/dashboard/app')
     } catch(e) {
       console.error(e.code, e.message)
     }

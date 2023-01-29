@@ -29,21 +29,36 @@ export default function App() {
     })
   }, [])
 
+  const checkIncludeAcademy = async (location, uid) =>{
+    if(location.pathname === '/dashboard/academy/add') return;
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains',uid).get()
+    if(!academyRes.docs.length) navigate('/dashboard/academy/add')
+}
+
   React.useEffect(() => {
-    const isLoginPage = location.pathname === '/login' || location.pathname === '/register'
-
-    if(!user && !isLoginPage) navigate('/login')
-
-    if(user && isLoginPage) navigate('/dashboard/app')
-  }, [location])
+    const isLoginPage = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register'
+    if(!isLoginPage) {
+      if(isEmptyObj(user)) navigate('/login')
+      else checkIncludeAcademy(location, user.uid);
+    }
+  }, [location, user])
 
   const fetchAcademyInfo = async (uid) => {
     const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', uid).get()
-    // console.log(academyFetchRes)
     if(academyFetchRes.docs.length)
       academyFetchRes.forEach((doc) => console.log(doc.id, doc.data()))
     else console.log('there\'s no academy for this user')
   }
+
+  const isEmptyObj = (obj) => {
+    if(obj.constructor === Object
+       && Object.keys(obj).length === 0)  {
+      return true;
+    }
+    return false;
+  }
+
+
 
   return (
     <ThemeProvider>

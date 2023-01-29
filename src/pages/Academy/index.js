@@ -88,7 +88,6 @@ export default function User() {
           id: doc.id
         }])
       })
-    else navigate('/dashboard/academy/add')
   }
 
   const handleRequestSort = (event, property) => {
