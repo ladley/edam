@@ -46,9 +46,10 @@ export default function App() {
   const checkIncludeAcademy = async (location, uid) =>{
     if(location.pathname === '/dashboard/academy/add') return;
     const academyRes = await db.collection('Academy').where('admins', 'array-contains',uid).get()
-    if(!academyRes.docs.length) 
+    if(!academyRes.docs.length){ 
     navigate('/dashboard/academy/add')
     enqueueSnackbar('등록된 학원 정보가 없어 등록 화면으로 이동 했습니다.', { variant: 'warning'})
+    }
 }
 
 
