@@ -20,7 +20,7 @@ import styled from 'styled-components'
 import Iconify from './Iconify'
 import "./react-datepicker.css";
 
-export default function RegularSchedule({ schedules = [], studentInfo = {}, onChangeSchedule = () => {} }) {
+export default function RegularSchedule({ schedules = [], studentInfo = {}, onChangeSchedule = () => {}, applySchedule }) {
   const [addMode, setAddMode] = React.useState([
     false, false, false, false, false, false, false
   ])
@@ -160,6 +160,7 @@ export default function RegularSchedule({ schedules = [], studentInfo = {}, onCh
                   startIcon={
                     <Iconify icon="line-md:circle-to-confirm-circle-transition" />
                   }
+                  onClick={() => applySchedule(index)}
                 >
                   반영하기
                 </Button>
