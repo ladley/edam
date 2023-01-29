@@ -29,7 +29,6 @@ export default function Add() {
     const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
     if(academyRes.docs.length){ 
       academyRes.forEach((doc) => {
-      console.log(doc.data().address)
       setTitle('학원 정보 수정')
       setName(doc.data().name)
       setTel(doc.data().tel)
