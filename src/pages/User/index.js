@@ -103,10 +103,10 @@ export default function User() {
       .get()
     // if(res.exist)
     res.forEach(async (doc) => {
-      if(!doc.data().regularSchedule){
+      if(!doc.data().price){
         // console.log('정기 스케줄 없음',doc.data().name)
         await db.collection('Student').doc(doc.id).set({
-          regularSchedule: DEFAULT_REGULAR_SCHEDULE
+          price: 11000
         }, { merge: true })
       }
 
