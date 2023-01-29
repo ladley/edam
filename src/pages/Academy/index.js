@@ -4,33 +4,26 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 // material
 import {
-  Card,
-  Table,
   Stack,
   Button,
-  Checkbox,
-  TableRow,
-  TableBody,
-  TableCell,
   Container,
   Typography,
-  TableContainer,
-  TablePagination,
+
 } from '@mui/material';
 // components
 import Page from '../../components/Page';
-import Scrollbar from '../../components/Scrollbar';
 import Iconify from '../../components/Iconify';
-import SearchNotFound from '../../components/SearchNotFound';
-import { AcademyListHead, AcademyListToolbar } from '../../sections/@dashboard/academy';
+import AcademyInfo from './AcademyInfo'
 import { db, auth } from '../../firebase'
-import { DEFAULT_REGULAR_SCHEDULE } from './Add';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: '' },
+  { id: 'tel', label: '전화번호', alignRight: false },
+  { id: 'address', label: '주소', alignRight: false },
+  { id: 'registDT', label: '등록시간', alignRight: false },
+  { id: 'bankAccount', label: '등록계좌', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -91,7 +84,10 @@ export default function User() {
     if(academyRes.docs.length)
     // 한 계정에 2개 이상의 학원이 등록될 수 있다고 생각했는데, 애초에 firebase에 하나씩만 등록됌
      academyRes.forEach((doc) => {
-      setAcademy(prev => [...prev, {...doc.data(), id: auth.currentUser.uid}])
+      setAcademy(prev => [...prev, {
+        ...doc.data(),
+         id: doc.id
+      }])
       })
   }
 
@@ -138,11 +134,13 @@ export default function User() {
     setFilterName(event.target.value);
   };
 
+
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - academy.length) : 0;
 
-  const filteredUsers = applySortFilter(academy, getComparator(order, orderBy), filterName);
+  const filteredAcademy = applySortFilter(academy, getComparator(order, orderBy), filterName);
 
-  const isUserNotFound = filteredUsers.length === 0;
+  const isAcademyNotFound = filteredAcademy.length === 0;
 
   return (
     <Page title="User">
@@ -155,97 +153,9 @@ export default function User() {
             학원 등록하기
           </Button>
         </Stack>
-
-        <Card>
-          <AcademyListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table>
-                <AcademyListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={academy.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
-                <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    // const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const { id, name } = row;
-                    const isItemSelected = selected.indexOf(name) !== -1;
-
-                    return (
-                      <TableRow
-                        hover
-                        key={id}
-                        tabIndex={-1}
-                        // component={RouterLink}
-                        // to={id}
-                        onClick={ () => navigate(id) }
-                        role="checkbox"
-                        selected={isItemSelected}
-                        aria-checked={isItemSelected}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none" style={{ width: '100%' }}>
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            {/* <Avatar alt={name} src={avatarUrl} /> */}
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-                        {/* <TableCell align="left">{company}</TableCell>
-                        <TableCell align="left">{role}</TableCell>
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                        <TableCell align="left">
-                          <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
-                            {sentenceCase(status)}
-                          </Label>
-                        </TableCell> */}
-
-                        <TableCell align="right">
-                          {/* <UserMoreMenu /> */}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isUserNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <SearchNotFound searchQuery={filterName} />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                )}
-              </Table>
-            </TableContainer>
-          </Scrollbar>
-
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={academy.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+          <AcademyInfo
+          academy={academy}
           />
-        </Card>
       </Container>
     </Page>
   );
