@@ -11,13 +11,11 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import ArrowRight from '@mui/icons-material/ArrowRight';
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import Home from '@mui/icons-material/Home';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import BusinessIcon from '@mui/icons-material/Business';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Settings from '@mui/icons-material/Settings';
 import People from '@mui/icons-material/People';
-import PermMedia from '@mui/icons-material/PermMedia';
-import Dns from '@mui/icons-material/Dns';
-import Public from '@mui/icons-material/Public';
 import { Link as RouterLink, useNavigate} from 'react-router-dom';
 
 const FireNav = styled(List)({
@@ -54,7 +52,7 @@ export default function AcademyInfo({ academy }) {
                     sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
-                        <People />
+                        <BusinessIcon />
                         {'주소'}
                     </ListItemIcon>
                     <ListItemText
@@ -67,7 +65,7 @@ export default function AcademyInfo({ academy }) {
                     sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
-                        <People />
+                        <LocalPhoneIcon />
                         {'전화  '}
                     </ListItemIcon>
                     <ListItemText
@@ -80,7 +78,7 @@ export default function AcademyInfo({ academy }) {
                     sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
-                        <People />
+                        <AccountBalanceWalletIcon />
                         {'계좌  '}
                     </ListItemIcon>
                     <ListItemText
