@@ -183,6 +183,50 @@ export default function Detail() {
     // setIsReadyCapture(false)
   };
 
+  // const applySpecificDayRegSchedule = (day) => {
+  //   const batch = db.batch()
+  //   schedule[day].map(
+  //     item => {
+  //       const start = moment(item.start).format('HH:mm')
+  //       const end = moment(item.end).format('HH:mm')
+  //       const mapRes = dayList[index].map((date) => {
+  //         const docRef = db.collection('Schedule').doc()
+  //         const data =  {
+  //           startDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${start}`).toDate(),
+  //           endDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${end}`).toDate(),
+  //           title: "",
+  //           targetStudent: db.collection('Student').doc(studentInfo.id)
+  //         }
+  //         batch.set(docRef, data)
+  //         return true
+  //       })
+  //       return mapRes
+  //     }
+  //   )
+  //   const scheduleMapRes = schedule.map(
+  //     (schedule, index) => schedule.schedules.map(
+  //       item => {
+  //         const start = moment(item.start).format('HH:mm')
+  //         const end = moment(item.end).format('HH:mm')
+  //         const mapRes = dayList[index].map((date) => {
+  //           const docRef = db.collection('Schedule').doc()
+  //           const data =  {
+  //             startDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${start}`).toDate(),
+  //             endDT: moment(`${selectedYearMonth.month} ${date} ${selectedYearMonth.year} ${end}`).toDate(),
+  //             title: "",
+  //             targetStudent: db.collection('Student').doc(studentInfo.id)
+  //           }
+  //           batch.set(docRef, data)
+  //           return true
+  //         })
+  //         return mapRes
+  //       }
+  //     )
+  //   )
+  //   batch.commit()
+  //   calendarRef.current.callFetchSchedule()
+  // }
+
   const applyRegularSchedule = () => {
     const batch = db.batch()
     const scheduleMapRes = schedule.map(
@@ -305,8 +349,11 @@ export default function Detail() {
                         fullWidth
                         variant='contained'
                         onClick={() => applyRegularSchedule()}
+                        startIcon={
+                          <Iconify icon="fluent-mdl2:waitlist-confirm" />
+                        }
                       >
-                        반영하기
+                        전체 반영하기
                       </Button>
                     </div>
                   </CardContent>

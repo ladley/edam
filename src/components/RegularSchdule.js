@@ -17,7 +17,7 @@ import setMinutes from "date-fns/setMinutes";
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import styled from 'styled-components'
-
+import Iconify from './Iconify'
 import "./react-datepicker.css";
 
 export default function RegularSchedule({ schedules = [], studentInfo = {}, onChangeSchedule = () => {} }) {
@@ -148,10 +148,22 @@ export default function RegularSchedule({ schedules = [], studentInfo = {}, onCh
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
+              alignItems: 'center'
             }}>
-              <Typography variant="h5" gutterBottom color={strColor}>
-                {value.korLabel}요일
-              </Typography>
+              <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                <Typography variant="h5" gutterBottom color={strColor} style={{ margin: 0 }}>
+                  {value.korLabel}요일
+                </Typography>
+                <Button
+                  variant="contained"
+                  size="small"
+                  startIcon={
+                    <Iconify icon="line-md:circle-to-confirm-circle-transition" />
+                  }
+                >
+                  반영하기
+                </Button>
+              </div>
               <Button
                 color='inherit'
                 onClick={() => setAddMode(prev => [
