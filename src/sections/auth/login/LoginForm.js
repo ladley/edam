@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
-import { auth } from '../../../firebase';
+import { db, auth } from '../../../firebase';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -43,7 +43,12 @@ export default function LoginForm() {
     try {
       const loginRes = await auth.signInWithEmailAndPassword(data.email, data.password)
       console.log(loginRes)
-      if(loginRes) navigate('/dashboard/app')
+      if(loginRes){
+        const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', loginRes.user.uid).get()
+      if(academyFetchRes.docs.length) navigate('/dashboard/app')
+      else navigate('/dashboard/academy/add')
+      }
+
     } catch(e) {
       console.error(e.code, e.message)
     }

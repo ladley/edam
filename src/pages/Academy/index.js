@@ -82,7 +82,6 @@ export default function User() {
 
     const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
     if(academyRes.docs.length)
-    // 한 계정에 2개 이상의 학원이 등록될 수 있다고 생각했는데, 애초에 firebase에 하나씩만 등록됌
      academyRes.forEach((doc) => {
       setAcademy(prev => [...prev, {
         ...doc.data(),

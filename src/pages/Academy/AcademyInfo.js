@@ -37,10 +37,6 @@ const FireNav = styled(List)({
 export default function AcademyInfo({ academy }) {
     const navigate = useNavigate()
 
-    const navigateAddOrFix = ()=>{
-        navigate(`/Add`);
-    }
-
     function ChildList() {
         if (!academy.length) return
         const keys = Object.keys(academy[0]) // ['address', 'admins[]', 'bankAccount', 'id',name, registDT, tel]
