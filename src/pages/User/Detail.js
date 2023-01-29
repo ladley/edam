@@ -51,26 +51,24 @@ export default function Detail() {
   }, [])
 
   React.useEffect(() => {
+    setDayList([[], [], [], [], [], [], []])
     const daysOfThisYM =  getDatesInMonth(
       Number(selectedYearMonth.year),
       new Date(`${selectedYearMonth.month} 1, 2000`).getMonth() + 1
     )
-    daysOfThisYM.forEach((day) => {
-      // setDayList(prev => 
-      //   ...prev,
-      //   [
-      //   ...prev.slice(0, day),
-      //   [ ...prev[day], date],
-      //   ...prev.slice(day + 1)
-      // ])
-      // console.log(moment(day).day(), moment(day).date())
+    daysOfThisYM.map((dayInfo) => {
+      const day = moment(dayInfo).day()
+      const date = moment(dayInfo).date()
+      
+      setDayList(prev => [
+        ...prev.slice(0, day),
+        [ ...prev[day], date],
+        ...prev.slice(day + 1)
+      ])
+
+      return true
     })
-    // console.log(sortByDay)
   }, [selectedYearMonth])
-  React.useEffect(() => {
-    // console.log(regularSchedule)
-    // updateSchedule()
-  }, [schedule])
 
   function getDatesInMonth(year, month) {
     const date = new Date(year, month - 1, 1);

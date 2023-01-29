@@ -157,18 +157,7 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
         initialView="dayGridMonth"
         // showNonCurrentDates={false}
         dayCellContent={(info) => info.dayNumberText.slice(0, info.dayNumberText.length - 1)}
-        dayCellDidMount={(info) => {
-          // console.log(info.date.getMonth() + 1 ,info.date.getDate())
-          if(selectedYearMonth.month === getMonthText(moment(info.date).month() + 1)) {
-            const day = moment(info.date).day()
-            const date = moment(info.date).date()
-            setDayList(prev => [
-              ...prev.slice(0, day),
-              [ ...prev[day], date],
-              ...prev.slice(day + 1)
-            ])
-          }
-        }}
+        dayCellDidMount={(info) => {}}
         dateClick={(arg) => handleDateClick(arg)}
         datesSet={(arg) =>
           setSelectedYearMonth({
