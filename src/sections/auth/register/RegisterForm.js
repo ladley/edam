@@ -24,7 +24,7 @@ export default function RegisterForm() {
     // lastName: Yup.string().required('성을 입력해주세요'),
     email: Yup.string().email('올바른 메일 주소를 입력해주세요').required('e메일 주소를 입력해주세요'),
     password: Yup.string().min(6, '최소 6자이상 입력해주세요').required('비밀번호를 입력해주세요'),
-    passwordChecker: Yup.string().min(6, '최소 6자이상 입력해주세요').required('비밀번호를 입력해주세요'),
+    passwordChecker: Yup.string().min(6, '최소 6자이상 입력해주세요.').required('비밀번호를 입력해주세요'),
   });
 
   const defaultValues = {
