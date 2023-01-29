@@ -1,17 +1,22 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+// alert SnackBar
+import { useSnackbar } from 'notistack'
 // routes
 import Router from './routes';
 // theme
 import ThemeProvider from './theme';
 // components
+
 import ScrollToTop from './components/ScrollToTop';
 import { BaseOptionChartStyle } from './components/chart/BaseOptionChart';
 // import { db } from "./firebase";
 import { auth, db } from './firebase';
 // ----------------------------------------------------------------------
 
+
 export default function App() {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const [user, setUser] = React.useState({})
   const navigate = useNavigate()
   const location = useLocation()
@@ -29,12 +34,6 @@ export default function App() {
     })
   }, [])
 
-  const checkIncludeAcademy = async (location, uid) =>{
-    if(location.pathname === '/dashboard/academy/add') return;
-    const academyRes = await db.collection('Academy').where('admins', 'array-contains',uid).get()
-    if(!academyRes.docs.length) navigate('/dashboard/academy/add')
-}
-
   React.useEffect(() => {
     const isLoginPage = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register'
     if(!isLoginPage) {
@@ -42,6 +41,17 @@ export default function App() {
       else checkIncludeAcademy(location, user.uid);
     }
   }, [location, user])
+
+
+  const checkIncludeAcademy = async (location, uid) =>{
+    if(location.pathname === '/dashboard/academy/add') return;
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains',uid).get()
+    if(!academyRes.docs.length) 
+    navigate('/dashboard/academy/add')
+    enqueueSnackbar('등록된 학원 정보가 없어 등록 화면으로 이동 했습니다.', { variant: 'warning'})
+}
+
+
 
   const fetchAcademyInfo = async (uid) => {
     const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', uid).get()
@@ -57,8 +67,6 @@ export default function App() {
     }
     return false;
   }
-
-
 
   return (
     <ThemeProvider>
