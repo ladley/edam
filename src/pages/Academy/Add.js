@@ -13,6 +13,7 @@ import { db, auth } from '../../firebase'
 
 export default function Add() {
   const [title, setTitle] = React.useState('학원 등록하기')
+
   const [name, setName] = React.useState('')
   const [tel, setTel] = React.useState('')
   const [address, setAddress] = React.useState('')
@@ -50,6 +51,7 @@ export default function Add() {
         id: addeAcademyId,
         name,tel, address, registDT, bankAccount
       })
+
       navigate('/dashboard/academy')
     } catch (e) {
       console.error(e)
@@ -61,6 +63,7 @@ export default function Add() {
       <CardContent>
         <Box>
           <h1 style={{ marginBottom: 12 }}>{title}</h1>
+
           <Divider />
           <FormWrap>
             <TextField
@@ -127,6 +130,7 @@ export default function Add() {
           수정하기
         </Button>
             }
+
 
           </FormWrap>
         </Box>

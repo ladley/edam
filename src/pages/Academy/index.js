@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
+
 // material
 import {
   Stack,
+
   Container,
   Typography,
 
@@ -37,6 +39,7 @@ export default function User() {
           <Typography variant="h4" gutterBottom>
             학원
           </Typography>
+
         </Stack>
           <AcademyInfo
           academy={academy}

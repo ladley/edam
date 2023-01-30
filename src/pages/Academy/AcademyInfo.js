@@ -16,6 +16,7 @@ import BusinessIcon from '@mui/icons-material/Business';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Settings from '@mui/icons-material/Settings';
 import People from '@mui/icons-material/People';
+
 import { Link as RouterLink, useNavigate} from 'react-router-dom';
 
 const FireNav = styled(List)({
@@ -53,6 +54,7 @@ export default function AcademyInfo({ academy }) {
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
                         <BusinessIcon />
+
                         {'주소'}
                     </ListItemIcon>
                     <ListItemText
@@ -66,6 +68,8 @@ export default function AcademyInfo({ academy }) {
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
                         <LocalPhoneIcon />
+
+                        <People />
                         {'전화  '}
                     </ListItemIcon>
                     <ListItemText
@@ -79,6 +83,7 @@ export default function AcademyInfo({ academy }) {
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
                         <AccountBalanceWalletIcon />
+
                         {'계좌  '}
                     </ListItemIcon>
                     <ListItemText
