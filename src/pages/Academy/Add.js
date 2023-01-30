@@ -11,67 +11,33 @@ import { Box, Button, Card, CardContent, Divider, TextField } from '@mui/materia
 
 import { db, auth } from '../../firebase'
 
-export const DEFAULT_REGULAR_SCHEDULE = [
-  {
-    day: 'Sunday',
-    korLabel: '일',
-    use: false,
-    schedules: []
-  },
-  {
-    day: 'Monday',
-    korLabel: '월',
-    use: false,
-    schedules: []
-  },
-  {
-    day: 'Tuesday',
-    korLabel: '화',
-    use: false,
-    schedules: []
-  },
-  {
-    day: 'Wednesday',
-    korLabel: '수',
-    use: false,
-    schedules: []
-  },
-  {
-    day: 'Thursday',
-    korLabel: '목',
-    use: false,
-    schedules: []
-  },
-  {
-    day: 'Friday',
-    korLabel: '금',
-    use: false,
-    schedules: []
-  },
-  {
-    day: 'Saturday',
-    korLabel: '토',
-    use: false,
-    schedules: []
-  },
-]
-
 export default function Add() {
+  const [title, setTitle] = React.useState('학원 등록하기')
 
   const [name, setName] = React.useState('')
   const [tel, setTel] = React.useState('')
   const [address, setAddress] = React.useState('')
   const [registDT, setRegistDT] = React.useState(new Date())
   const [bankAccount, setbankAccount] = React.useState('')
-  const [addMaterialData, setAddMaterialData] = React.useState({
-    name: '',
-    phone: 0,
-    admin: 0,
-    registDT: 0,
-    bankAccount: '',
-  })
   
   const navigate = useNavigate()
+
+  React.useEffect(() => {
+    getAcademyInfo()
+  }, [])
+
+  const getAcademyInfo = async () => {
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
+    if(academyRes.docs.length){ 
+      academyRes.forEach((doc) => {
+      setTitle('학원 정보 수정')
+      setName(doc.data().name)
+      setTel(doc.data().tel)
+      setAddress(doc.data().address)
+      setbankAccount(doc.data().bankAccount)
+      })
+    }
+  }
 
   const handleAddAcademy = async () => {
     try {
@@ -86,8 +52,6 @@ export default function Add() {
         name,tel, address, registDT, bankAccount
       })
 
-      console.log('data add success:', addAcademyRes)
-
       navigate('/dashboard/academy')
     } catch (e) {
       console.error(e)
@@ -98,7 +62,8 @@ export default function Add() {
     <Card>
       <CardContent>
         <Box>
-          <h1 style={{ marginBottom: 12 }}>학원 등록하기</h1>
+          <h1 style={{ marginBottom: 12 }}>{title}</h1>
+
           <Divider />
           <FormWrap>
             <TextField
@@ -146,14 +111,27 @@ export default function Add() {
               value={bankAccount}
               onChange={(e) => setbankAccount(e.target.value)}
             />
+            {title === '학원 등록하기'?
             <Button
-              style={{ margin: 8 }}
-              fullWidth
-              variant='contained'
-              onClick={() => handleAddAcademy()}
-            >
-              추가하기
-            </Button>
+            style={{ margin: 8 }}
+            fullWidth
+            variant='contained'
+            onClick={() => handleAddAcademy()}
+          >
+            추가하기
+          </Button>
+          : 
+          <Button
+          style={{ margin: 8 }}
+          fullWidth
+          variant='contained'
+          onClick={() => handleAddAcademy()}
+        >
+          수정하기
+        </Button>
+            }
+
+
           </FormWrap>
         </Box>
       </CardContent>

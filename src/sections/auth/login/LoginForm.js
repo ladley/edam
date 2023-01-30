@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
-import { auth } from '../../../firebase';
+import { db, auth } from '../../../firebase';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -42,7 +42,6 @@ export default function LoginForm() {
   const onSubmit = async (data) => {
     try {
       const loginRes = await auth.signInWithEmailAndPassword(data.email, data.password)
-      console.log(loginRes)
       if(loginRes) navigate('/dashboard/app')
     } catch(e) {
       console.error(e.code, e.message)
