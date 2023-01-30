@@ -1,0 +1,211 @@
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import ArrowRight from '@mui/icons-material/ArrowRight';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import Home from '@mui/icons-material/Home';
+import Settings from '@mui/icons-material/Settings';
+import People from '@mui/icons-material/People';
+import PermMedia from '@mui/icons-material/PermMedia';
+import Dns from '@mui/icons-material/Dns';
+import Public from '@mui/icons-material/Public';
+import { Link as RouterLink, useNavigate} from 'react-router-dom';
+
+const FireNav = styled(List)({
+    '& .MuiListItemButton-root': {
+        paddingLeft: 24,
+        paddingRight: 24,
+    },
+    '& .MuiListItemIcon-root': {
+        minWidth: 0,
+        marginRight: 16,
+    },
+    '& .MuiSvgIcon-root': {
+        fontSize: 20,
+    },
+});
+
+export default function AcademyInfo({ academy }) {
+    const navigate = useNavigate()
+
+    const navigateAddOrFix = ()=>{
+        navigate(`/Add`);
+    }
+
+    function ChildList() {
+        if (!academy.length) return
+        const keys = Object.keys(academy[0]) // ['address', 'admins[]', 'bankAccount', 'id',name, registDT, tel]
+        const childList = []
+
+        for (let i = 0; i < keys.length; i += 6) {
+            const key = keys[i] // 각각의 키
+            const value = academy[0][key] // 각각의 키에 해당하는 각각의 값
+            childList.push({ key: value, label: value })
+        }
+        const list =
+            <>
+                <ListItemButton
+                    key={'address'}
+                    sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                >
+                    <ListItemIcon sx={{ color: 'inherit' }}>
+                        <People />
+                        {'주소'}
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={academy[0].address}
+                        primaryTypographyProps={{ fontSize: 21, fontWeight: 'medium' }}
+                    />
+                </ListItemButton>
+                <ListItemButton
+                    key={'tel'}
+                    sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                >
+                    <ListItemIcon sx={{ color: 'inherit' }}>
+                        <People />
+                        {'전화  '}
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={academy[0].tel}
+                        primaryTypographyProps={{ fontSize: 21, fontWeight: 'medium' }}
+                    />
+                </ListItemButton>
+                <ListItemButton
+                    key={'계좌'}
+                    sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                >
+                    <ListItemIcon sx={{ color: 'inherit' }}>
+                        <People />
+                        {'계좌  '}
+                    </ListItemIcon>
+                    <ListItemText
+                        primary={academy[0].bankAccount}
+                        primaryTypographyProps={{ fontSize: 21, fontWeight: 'medium' }}
+                    />
+                </ListItemButton>
+                {academy[0].admins?.map((item, index) => (
+                    <ListItemButton
+                        key={item}
+                        sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                    >
+                        <ListItemIcon sx={{ color: 'inherit' }}>
+                            <People />
+                            {`관리자_ ${index + 1}`}
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={item}
+                            primaryTypographyProps={{ fontSize: 21, fontWeight: 'medium' }}
+                        />
+                    </ListItemButton>
+                ))}
+
+
+            </>
+        return list
+    }
+
+    return (
+        <Box sx={{ display: 'flex' }}>
+            <ThemeProvider
+                theme={createTheme({
+                    components: {
+                        MuiListItemButton: {
+                            defaultProps: {
+                                disableTouchRipple: true,
+                            },
+                        },
+                    },
+                    palette: {
+                        mode: 'dark',
+                        primary: { main: 'rgb(102, 157, 246)' },
+                        background: { paper: 'rgb(5, 30, 52)' },
+                    },
+                })}
+            >
+                <Paper elevation={0} sx={{ width: '100%', height: '100%' }}>
+                    <FireNav component="nav" disablePadding>
+                        <ListItemButton component="a" href="#customized-list">
+                            <ListItemIcon sx={{ fontSize: 30 }}>🔥</ListItemIcon>
+                            <ListItemText
+                                sx={{ my: 0 }}
+                                primary={academy[0]?.name}
+                                primaryTypographyProps={{
+                                    fontSize: 30,
+                                    fontWeight: 'medium',
+                                    letterSpacing: 0,
+                                }}
+                            />
+                        </ListItemButton>
+                        <Divider />
+                        <ListItem component="div" disablePadding>
+                            <ListItemButton sx={{ height: 56 }}
+                            >
+                                <ListItemText
+                                    primary="학원정보 수정하기"
+                                    primaryTypographyProps={{
+                                        color: 'primary',
+                                        fontWeight: 'medium',
+                                        variant: 'body2',
+                                    }}
+                                />
+                            </ListItemButton>
+                            <Tooltip title="학원 정보 수정">
+                                <IconButton
+                                    component={RouterLink} to="add"
+                                    size="large"
+                                    sx={{
+                                        '& svg': {
+                                            color: 'rgba(255,255,255,0.8)',
+                                            transition: '0.2s',
+                                            transform: 'translateX(0) rotate(0)',
+                                        },
+                                        '&:hover, &:focus': {
+                                            bgcolor: 'unset',
+                                            '& svg:first-of-type': {
+                                                transform: 'translateX(-4px) rotate(-20deg)',
+                                            },
+                                            '& svg:last-of-type': {
+                                                right: 0,
+                                                opacity: 1,
+                                            },
+                                        },
+                                        '&:after': {
+                                            content: '""',
+                                            position: 'absolute',
+                                            height: '80%',
+                                            display: 'block',
+                                            left: 0,
+                                            width: '1px',
+                                            bgcolor: 'divider',
+                                        },
+                                    }}
+                                >
+                                    <Settings />
+                                    <ArrowRight sx={{ position: 'absolute', right: 4, opacity: 0 }} />
+                                </IconButton>
+                            </Tooltip>
+                        </ListItem>
+                        <Divider />
+                        <Box
+                            sx={{
+                                bgcolor:'rgba(71, 98, 130, 0.2)',
+                                pb:  2
+                            }}
+                        >
+                            <ChildList />
+                        </Box>
+                    </FireNav>
+                </Paper>
+            </ThemeProvider>
+        </Box>
+    );
+}

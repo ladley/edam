@@ -9,6 +9,8 @@ import Blog from './pages/Blog';
 import User from './pages/User';
 import UserAdd from './pages/User/Add';
 import UserDetail from './pages/User/Detail';
+import Academy from './pages/Academy'
+import AcademyAdd from './pages/Academy/Add'
 import UserModify from './pages/User/Modify';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
@@ -27,6 +29,8 @@ export default function Router() {
         { path: 'app', element: <DashboardApp /> },
         { path: 'student', element: <User /> },
         { path: 'student/add', element: <UserAdd /> },
+        { path: 'academy',element: <Academy/>},
+        { path: 'academy/add',element: <AcademyAdd/>},
         { path: 'student/:sequence', element: <UserDetail /> },
         { path: 'student/modify/:sequence', element: <UserModify /> },
         { path: 'products', element: <Products /> },
