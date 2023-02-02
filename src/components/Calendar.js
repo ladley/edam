@@ -11,7 +11,7 @@ import ScheduleAddingModal from './ScheduleAddingModal';
 import ScheduleModifyModal from './ScheduleModifyModal';
 import { db } from '../firebase'
 
-const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMonth, setSelectedYearMonth, setDayList }, ref) => {
+const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMonth, setSelectedYearMonth }, ref) => {
   const [modalOpen, setModalOpen] = React.useState(false)
   const [schedule, setSchedule] = React.useState([])
   const [modifierOpen, setModifierOpen] = React.useState(false)
@@ -157,7 +157,7 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
         initialView="dayGridMonth"
         // showNonCurrentDates={false}
         dayCellContent={(info) => info.dayNumberText.slice(0, info.dayNumberText.length - 1)}
-        dayCellDidMount={(info) => {}}
+        // dayCellDidMount={(info) => {}}
         dateClick={(arg) => handleDateClick(arg)}
         datesSet={(arg) =>
           setSelectedYearMonth({

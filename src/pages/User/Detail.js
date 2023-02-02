@@ -11,7 +11,6 @@ import {
   Stack,
   Button
 } from '@mui/material'
-import styled from 'styled-components'
 import moment from 'moment'
 import html2canvas from 'html2canvas';
 
@@ -97,19 +96,9 @@ export default function Detail() {
   const updateSchedule = async () => {
     try {
       if (!loadSchedule) return
-      const res = await
-      db.collection('Student')
+      await db.collection('Student')
       .doc(documentId)
-      .update({
-          'regularSchedule': schedule
-        // 'regularSchedule': schedule.map(item => ({
-        //   ...item,
-        //   startTM: moment(item.startTM).format('HH:mm').toString(),
-        //   endTM: moment(item.endTM).format('HH:mm').toString()
-        // }))
-      })
-
-      // console.log(res)
+      .update({ 'regularSchedule': schedule })
     } catch(e) {
       console.error('error occured in updateSchdule function', e)
     }
@@ -119,9 +108,7 @@ export default function Detail() {
       const res = await
         db.collection('Student')
         .doc(documentId)
-        // .collection('RegularSchedule')
         .get()
-      // console.log(res.data())
       if(res.data().regularSchedule) {
         setSchedule(res.data().regularSchedule.map(item => ({
           ...item,
@@ -210,7 +197,7 @@ export default function Detail() {
 
   const applyRegularSchedule = () => {
     const batch = db.batch()
-    const scheduleMapRes = schedule.map(
+    schedule.map(
       (schedule, index) => schedule.schedules.map(
         item => {
           const start = moment(item.start).format('HH:mm')
@@ -387,21 +374,3 @@ export default function Detail() {
     </Page>
   )
 }
-
-const DayPicker = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 8px;
-`
-
-const DayTimeWrap = styled.div`
-  margin-bottom: 8px;
-`
-
-const TimePickerWrap = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`

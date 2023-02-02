@@ -20,7 +20,7 @@ import styled from 'styled-components'
 import Iconify from './Iconify'
 import "./react-datepicker.css";
 
-export default function RegularSchedule({ schedules = [], studentInfo = {}, onChangeSchedule = () => {}, applySchedule }) {
+export default function RegularSchedule({ schedules = [], onChangeSchedule = () => {}, applySchedule }) {
   const [addMode, setAddMode] = React.useState([
     false, false, false, false, false, false, false
   ])
