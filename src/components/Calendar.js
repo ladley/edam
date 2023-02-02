@@ -164,7 +164,7 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
           year: arg.view.title.slice(0,4),
           month: getMonthText(arg.view.title.slice(-3, -1))
         })}
-        eventContent={renderEventContent}
+        eventContent={(event) => renderEventContent(event, selectedYearMonth.month)}
         eventClick={(arg) => handleEventClick(arg)}
         events={[
           ...schedule
@@ -187,13 +187,15 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
   );
 })
 
-function renderEventContent(eventInfo) {
+function renderEventContent(eventInfo, month) {
 
   const startTime = new Date(eventInfo.event.startStr).toTimeString().split(' ')[0].slice(0, 5)
   const endTime = new Date(eventInfo.event.endStr).toTimeString().split(' ')[0].slice(0, 5)
+  const isSelectedMonth = moment(eventInfo.event.startStr).toDate().toString().slice(4, 7) === month
+  console.log(isSelectedMonth)
   // const endDate = new Date(eventInfo.endStr)
   return (
-    <DaySchedule>
+    <DaySchedule textGray={!isSelectedMonth}>
       {
         // console.log(eventInfo.event.extendedProps)
       }
@@ -233,6 +235,7 @@ const DaySchedule = styled.div`
   padding: 2px;
   font-size: 12px;
   text-align: center;
+  color: ${({ textGray }) => textGray ? '#c0c0c0' : 'black'};
   /* &:last-child {
     border: none;
   } */
