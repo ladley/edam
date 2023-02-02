@@ -6,10 +6,10 @@ import { Box } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-const Page = forwardRef(({ children, title = '', meta, ...other }, ref) => (
+const Page = forwardRef(({ children, title = '학원 관리 프로그램', meta, ...other }, ref) => (
   <>
     <Helmet>
-      <title>이담 아뜰리에</title>
+      <title>{ title }</title>
       {meta}
     </Helmet>
 
