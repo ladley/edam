@@ -17,7 +17,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Settings from '@mui/icons-material/Settings';
 import People from '@mui/icons-material/People';
 
-import { Link as RouterLink, useNavigate} from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 const FireNav = styled(List)({
     '& .MuiListItemButton-root': {
@@ -34,8 +34,6 @@ const FireNav = styled(List)({
 });
 
 export default function AcademyInfo({ academy }) {
-    const navigate = useNavigate()
-
     function ChildList() {
         if (!academy.length) return
         const keys = Object.keys(academy[0]) // ['address', 'admins[]', 'bankAccount', 'id',name, registDT, tel]
