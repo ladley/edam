@@ -55,7 +55,7 @@ export default function AcademyInfo({ academy }) {
                     <ListItemIcon sx={{ color: 'inherit' }}>
                         <BusinessIcon />
 
-                        {'주소'}
+                        {'주소dsad'}
                     </ListItemIcon>
                     <ListItemText
                         primary={academy[0].address}
