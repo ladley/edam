@@ -69,10 +69,6 @@ export default function Add() {
   const [price, setPrice] = React.useState(0)
   const navigate = useNavigate()
 
-  React.useEffect( () => {
-    console.log(auth.currentUser.uid)
-  }, [])
-
   const handleAddStudent = async () => {
     try {
       const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()

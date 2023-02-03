@@ -52,8 +52,6 @@ export default function App() {
     }
 }
 
-
-
   const fetchAcademyInfo = async (uid) => {
     const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', uid).get()
     if(academyFetchRes.docs.length)
