@@ -231,6 +231,9 @@ export default function Detail() {
       console.error(e.code, e.message)
     }
   }
+
+  const [showBill, setshowBill] = React.useState(false);
+
   return (
     <Page>
       <Container>
@@ -347,7 +350,14 @@ export default function Detail() {
                   />
                 </CardContent>
               </Card>
-              <Card>
+              <style>{`
+
+                    .element-visible { display: block }
+                    .element-hidden { display: none }
+
+              `}</style>
+              <Card className={showBill ? 'element-visible' : 'element-hidden'}
+              stlye = {{marginTop : 15}}>
                 <CardContent>
 
                     <Table
@@ -359,6 +369,14 @@ export default function Detail() {
                 </CardContent>
               </Card>
             </div>
+              <Button
+                style={{ marginTop: 8 }}
+                fullWidth
+                variant='contained'
+                onClick={() => setshowBill(!showBill)}
+              >
+                결제정보 확인하기
+              </Button>
               <Button
                 style={{ marginTop: 8 }}
                 fullWidth
