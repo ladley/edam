@@ -32,6 +32,7 @@ export default function Detail() {
   const [schedule, setSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
   const [dayList, setDayList] = React.useState([[], [], [], [], [], [], []])
+  const [showBill, setshowBill] = React.useState(false);
   const [selectedYearMonth, setSelectedYearMonth] = React.useState({
     month: String(monthNames[new Date().getMonth()]),
     year: String(new Date().getFullYear()),
@@ -232,7 +233,6 @@ export default function Detail() {
     }
   }
 
-  const [showBill, setshowBill] = React.useState(false);
 
   return (
     <Page>
@@ -350,24 +350,18 @@ export default function Detail() {
                   />
                 </CardContent>
               </Card>
-              <style>{`
-
-                    .element-visible { display: block }
-                    .element-hidden { display: none }
-
-              `}</style>
-              <Card className={showBill ? 'element-visible' : 'element-hidden'}
-              style = {{marginTop : 15}}>
-                <CardContent>
-
-                    <Table
-                      year={selectedYearMonth.year && selectedYearMonth.year}
-                      month={selectedYearMonth.month && selectedYearMonth.month}
-                      classBill={billItems}
-                      targetId={studentInfo && studentInfo.id}
-                    />
-                </CardContent>
-              </Card>
+              { showBill &&
+                <Card>
+                  <CardContent>
+                      <Table
+                        year={selectedYearMonth.year && selectedYearMonth.year}
+                        month={selectedYearMonth.month && selectedYearMonth.month}
+                        classBill={billItems}
+                        targetId={studentInfo && studentInfo.id}
+                      />
+                  </CardContent>
+                </Card>
+              }
             </div>
               <Button
                 style={{ marginTop: 8 }}
@@ -375,7 +369,7 @@ export default function Detail() {
                 variant='contained'
                 onClick={() => setshowBill(!showBill)}
               >
-                결제정보 확인하기
+                {!showBill ? '청구서 표시' : '청구서 숨김'}
               </Button>
               <Button
                 style={{ marginTop: 8 }}
