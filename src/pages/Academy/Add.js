@@ -13,7 +13,7 @@ import { db, auth } from '../../firebase'
 
 export default function Add() {
   const [title, setTitle] = React.useState('학원 등록하기')
-
+  const [id, setId] = React.useState('')
   const [name, setName] = React.useState('')
   const [tel, setTel] = React.useState('')
   const [address, setAddress] = React.useState('')
@@ -27,14 +27,16 @@ export default function Add() {
   }, [])
 
   const getAcademyInfo = async () => {
+
     const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
     if(academyRes.docs.length) {
       academyRes.forEach((doc) => {
-      setTitle('학원 정보 수정')
-      setName(doc.data().name)
-      setTel(doc.data().tel)
-      setAddress(doc.data().address)
-      setbankAccount(doc.data().bankAccount)
+        setTitle('학원 정보 수정')
+        setId(doc.id)
+        setName(doc.data().name || '')
+        setTel(doc.data().tel || '')
+        setAddress(doc.data().address || '')
+        setbankAccount(doc.data().bankAccount || '')
       })
     }
   }
@@ -49,7 +51,19 @@ export default function Add() {
       await db.collection('Academy').doc(addeAcademyId).set({
         admins: [auth.currentUser.uid],
         id: addeAcademyId,
-        name,tel, address, registDT, bankAccount
+        name, tel, address, registDT, bankAccount
+      })
+
+      navigate('/dashboard/academy')
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleUpdateAcademy = async () => {
+    try {
+      await db.collection('Academy').doc(id).update({
+        name, tel, address, bankAccount
       })
 
       navigate('/dashboard/academy')
@@ -125,7 +139,7 @@ export default function Add() {
           style={{ margin: 8 }}
           fullWidth
           variant='contained'
-          onClick={() => handleAddAcademy()}
+          onClick={() => handleUpdateAcademy()}
         >
           수정하기
         </Button>
