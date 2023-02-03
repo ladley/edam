@@ -357,7 +357,7 @@ export default function Detail() {
 
               `}</style>
               <Card className={showBill ? 'element-visible' : 'element-hidden'}
-              stlye = {{marginTop : 15}}>
+              style = {{marginTop : 15}}>
                 <CardContent>
 
                     <Table

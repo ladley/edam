@@ -13,7 +13,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import FormLabel from '@mui/material/FormLabel';
-
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
@@ -22,9 +21,22 @@ import Checkbox from '@mui/material/Checkbox';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { db } from '../firebase'
+import { db , auth} from '../firebase';
 
-export default function DenseTable({ classBill, month, year, targetId }) {
+export default function DenseTable({classBill, month, year, targetId }) {  
+  const [bankAccount, setbankAccount] = React.useState('')
+
+  React.useEffect(() => {
+    getAcademyInfo()
+  }, [])
+  const getAcademyInfo = async () => {
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
+    if(academyRes.docs.length) {      
+      academyRes.forEach((doc) => {
+        setbankAccount(doc.data().bankAccount)
+      })
+    }
+  }
   const [billId, setBillId] = React.useState('')
   const [billPrice, setBillPrice] = React.useState(0)
   const [isAddMode, setIsAddMode] = React.useState(false)
@@ -270,8 +282,8 @@ export default function DenseTable({ classBill, month, year, targetId }) {
           // gap: 20
         }}
       >
-        <h4 style={{ fontWeight: 'normal' }}>
-          우리은행 1002-439-121265 (진현수)
+        <h4 style={{ fontWeight: 'normal' }}>          
+          {bankAccount}
         </h4>
         <h2>총액: {billPrice.toLocaleString('ko-KR')}</h2>
       </div>
