@@ -32,6 +32,7 @@ export default function Detail() {
   const [schedule, setSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
   const [dayList, setDayList] = React.useState([[], [], [], [], [], [], []])
+  const [showBill, setshowBill] = React.useState(false);
   const [selectedYearMonth, setSelectedYearMonth] = React.useState({
     month: String(monthNames[new Date().getMonth()]),
     year: String(new Date().getFullYear()),
@@ -231,6 +232,8 @@ export default function Detail() {
       console.error(e.code, e.message)
     }
   }
+
+
   return (
     <Page>
       <Container>
@@ -347,18 +350,27 @@ export default function Detail() {
                   />
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent>
-
-                    <Table
-                      year={selectedYearMonth.year && selectedYearMonth.year}
-                      month={selectedYearMonth.month && selectedYearMonth.month}
-                      classBill={billItems}
-                      targetId={studentInfo && studentInfo.id}
-                    />
-                </CardContent>
-              </Card>
+              { showBill &&
+                <Card>
+                  <CardContent>
+                      <Table
+                        year={selectedYearMonth.year && selectedYearMonth.year}
+                        month={selectedYearMonth.month && selectedYearMonth.month}
+                        classBill={billItems}
+                        targetId={studentInfo && studentInfo.id}
+                      />
+                  </CardContent>
+                </Card>
+              }
             </div>
+              <Button
+                style={{ marginTop: 8 }}
+                fullWidth
+                variant='contained'
+                onClick={() => setshowBill(!showBill)}
+              >
+                {!showBill ? '청구서 표시' : '청구서 숨김'}
+              </Button>
               <Button
                 style={{ marginTop: 8 }}
                 fullWidth
