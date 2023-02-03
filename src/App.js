@@ -16,7 +16,7 @@ import { auth, db } from './firebase';
 
 
 export default function App() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const [user, setUser] = React.useState({})
   const navigate = useNavigate()
   const location = useLocation()

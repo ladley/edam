@@ -19,7 +19,7 @@ export default function Add() {
   const [address, setAddress] = React.useState('')
   const [registDT, setRegistDT] = React.useState(new Date())
   const [bankAccount, setbankAccount] = React.useState('')
-  
+
   const navigate = useNavigate()
 
   React.useEffect(() => {
@@ -29,7 +29,7 @@ export default function Add() {
   const getAcademyInfo = async () => {
 
     const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
-    if(academyRes.docs.length){ 
+    if(academyRes.docs.length) {
       academyRes.forEach((doc) => {
         setTitle('학원 정보 수정')
         setId(doc.id)

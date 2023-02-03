@@ -11,7 +11,7 @@ import ScheduleAddingModal from './ScheduleAddingModal';
 import ScheduleModifyModal from './ScheduleModifyModal';
 import { db } from '../firebase'
 
-const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMonth, setSelectedYearMonth, setDayList }, ref) => {
+const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMonth, setSelectedYearMonth }, ref) => {
   const [modalOpen, setModalOpen] = React.useState(false)
   const [schedule, setSchedule] = React.useState([])
   const [modifierOpen, setModifierOpen] = React.useState(false)
@@ -157,14 +157,14 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
         initialView="dayGridMonth"
         // showNonCurrentDates={false}
         dayCellContent={(info) => info.dayNumberText.slice(0, info.dayNumberText.length - 1)}
-        dayCellDidMount={(info) => {}}
+        // dayCellDidMount={(info) => {}}
         dateClick={(arg) => handleDateClick(arg)}
         datesSet={(arg) =>
           setSelectedYearMonth({
           year: arg.view.title.slice(0,4),
           month: getMonthText(arg.view.title.slice(-3, -1))
         })}
-        eventContent={renderEventContent}
+        eventContent={(event) => renderEventContent(event, selectedYearMonth.month)}
         eventClick={(arg) => handleEventClick(arg)}
         events={[
           ...schedule
@@ -187,13 +187,15 @@ const Calendar = React.forwardRef(({ studentInfo, setBillItems, selectedYearMont
   );
 })
 
-function renderEventContent(eventInfo) {
+function renderEventContent(eventInfo, month) {
 
   const startTime = new Date(eventInfo.event.startStr).toTimeString().split(' ')[0].slice(0, 5)
   const endTime = new Date(eventInfo.event.endStr).toTimeString().split(' ')[0].slice(0, 5)
+  const isSelectedMonth = moment(eventInfo.event.startStr).toDate().toString().slice(4, 7) === month
+  console.log(isSelectedMonth)
   // const endDate = new Date(eventInfo.endStr)
   return (
-    <DaySchedule>
+    <DaySchedule textGray={!isSelectedMonth}>
       {
         // console.log(eventInfo.event.extendedProps)
       }
@@ -233,6 +235,7 @@ const DaySchedule = styled.div`
   padding: 2px;
   font-size: 12px;
   text-align: center;
+  color: ${({ textGray }) => textGray ? '#c0c0c0' : 'black'};
   /* &:last-child {
     border: none;
   } */
