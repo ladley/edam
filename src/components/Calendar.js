@@ -192,7 +192,7 @@ function renderEventContent(eventInfo, month) {
   const startTime = new Date(eventInfo.event.startStr).toTimeString().split(' ')[0].slice(0, 5)
   const endTime = new Date(eventInfo.event.endStr).toTimeString().split(' ')[0].slice(0, 5)
   const isSelectedMonth = moment(eventInfo.event.startStr).toDate().toString().slice(4, 7) === month
-  console.log(isSelectedMonth)
+  // console.log(isSelectedMonth)
   // const endDate = new Date(eventInfo.endStr)
   return (
     <DaySchedule textGray={!isSelectedMonth}>
@@ -218,7 +218,6 @@ const Container = styled.div`
     &:nth-last-child(-n+2) {
       border: none;
     }
-
   }
   & .fc-daygrid-day-frame{
     /* overflow: scroll; */
