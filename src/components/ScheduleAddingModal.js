@@ -1,7 +1,6 @@
 import React from 'react'
 
-import Modal from '@mui/material/Modal';
-
+import Modal from '@mui/material/Modal'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions';
@@ -57,7 +56,9 @@ export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleI
     let academyId;
     const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
     if (academyRes.docs.length)
-    academyRes.forEach((doc) => doc.id ? academyId = doc.id : null)
+    academyRes.forEach((doc) => {
+      academyId = doc.id ? doc.id : null
+    })
 
     const res = await db.collection('Student').where('targetAcademy', '==', db.collection('Academy').doc(academyId)).get()
 
