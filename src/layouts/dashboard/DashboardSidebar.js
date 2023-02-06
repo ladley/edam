@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import { React ,useEffect} from 'react';
+import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
@@ -36,15 +35,11 @@ const AccountStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-DashboardSidebar.propTypes = {
-  isOpenSidebar: PropTypes.bool,
-  onCloseSidebar: PropTypes.func,
-};
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+  const [name, setName] = React.useState("");
   const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');
-  const [name, setName] = React.useState("");
 
   React.useEffect(() => {
       getAcademyInfo()
@@ -65,7 +60,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     photoURL: '/static/mock-images/avatars/avatar_default.jpg',
   };
   
-  useEffect(() => {
+  React.useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
     }
