@@ -52,6 +52,7 @@
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.88",
     "@mui/material": "^5.8.6",
+    "@mui/x-data-grid": "^5.17.22",
     "@mui/x-date-pickers": "^5.0.12",
     "@testing-library/jest-dom": "^5.16.4",
     "apexcharts": "^3.35.3",

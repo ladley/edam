@@ -6,8 +6,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 
 import { useNavigate } from 'react-router-dom'
-
 import { Box, Button, Card, CardContent, Divider, TextField } from '@mui/material';
+
+import AcademyListTable from './AcademyListTable'
 
 import { db, auth } from '../../firebase'
 
@@ -77,7 +78,7 @@ export default function Add() {
       <CardContent>
         <Box>
           <h1 style={{ marginBottom: 12 }}>{title}</h1>
-
+          <AcademyListTable/>
           <Divider />
           <FormWrap>
             <TextField
