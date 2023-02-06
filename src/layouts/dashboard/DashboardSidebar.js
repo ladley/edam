@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { React ,useEffect} from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
 // mock
-import account from '../../_mock/account';
+// import account from '../../_mock/account';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
 // components
@@ -14,7 +14,7 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
 import navConfig from './NavConfig';
-
+import { db, auth } from '../../firebase';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -43,9 +43,28 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-
   const isDesktop = useResponsive('up', 'lg');
+  const [name, setName] = React.useState("");
 
+  React.useEffect(() => {
+      getAcademyInfo()
+  }, [])
+  
+  const getAcademyInfo = async () => {
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
+    if(academyRes.docs.length){ 
+      academyRes.forEach((doc) => {
+        setName(doc.data().name)
+      })
+    }
+  }
+ 
+  const account = {
+    displayName: {name},
+    email: 'demo@minimals.cc',
+    photoURL: '/static/mock-images/avatars/avatar_default.jpg',
+  };
+  
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
