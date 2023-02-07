@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -34,6 +34,11 @@ export default function AccountPopover() {
   const anchorRef = useRef(null);
 
   const [open, setOpen] = useState(null);
+  const [displayInfo, setDisplayInfo] = useState(account);
+
+  React.useEffect(() => {
+    setDisplayInfo(auth.currentUser)
+  }, [])
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
@@ -68,7 +73,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={displayInfo.photoURL} alt="photoURL" />
       </IconButton>
 
       <MenuPopover
@@ -87,10 +92,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {displayInfo.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {displayInfo.email}
           </Typography>
         </Box>
 
