@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { filter } from 'lodash';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-// jh test
 // material
 import {
   Card,
@@ -24,7 +23,6 @@ import Iconify from '../../components/Iconify';
 import SearchNotFound from '../../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../../sections/@dashboard/user';
 import { db, auth } from '../../firebase'
-import { DEFAULT_REGULAR_SCHEDULE } from './Add';
 
 // ----------------------------------------------------------------------
 

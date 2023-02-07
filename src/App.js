@@ -16,7 +16,7 @@ import { auth, db } from './firebase';
 
 
 export default function App() {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const [user, setUser] = React.useState({})
   const navigate = useNavigate()
   const location = useLocation()
@@ -51,8 +51,6 @@ export default function App() {
     enqueueSnackbar('등록된 학원 정보가 없어 등록 화면으로 이동 했습니다.', { variant: 'warning'})
     }
 }
-
-
 
   const fetchAcademyInfo = async (uid) => {
     const academyFetchRes = await db.collection('Academy').where('admins', 'array-contains', uid).get()

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-
 // material
 import {
   Stack,
-
   Container,
   Typography,
-
 } from '@mui/material';
+
+import { useLocation } from 'react-router-dom';
 // components
 import Page from '../../components/Page';
 import AcademyInfo from './AcademyInfo'
@@ -16,19 +15,20 @@ import { db, auth } from '../../firebase'
 
 export default function User() {
   const [academy, setAcademy] = useState([])
+  const location = useLocation()
 
   useEffect(() => {
     fetchAcademy()
-  }, [])
+  }, [location])
 
   const fetchAcademy = async () => {
     const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
     if (academyRes.docs.length)
       academyRes.forEach((doc) => {
-        setAcademy(prev => [...prev, {
+        setAcademy({
           ...doc.data(),
           id: doc.id
-        }])
+        })
       })
   }
 
@@ -42,7 +42,7 @@ export default function User() {
 
         </Stack>
           <AcademyInfo
-          academy={academy}
+            academy={academy}
           />
       </Container>
     </Page>

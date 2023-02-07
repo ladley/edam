@@ -1,7 +1,6 @@
 import React from 'react'
 
-import Modal from '@mui/material/Modal';
-
+import Modal from '@mui/material/Modal'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions';
@@ -22,7 +21,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components'
 import OtherDatePicker from 'react-datepicker';
 import moment from 'moment'
-import { db } from '../firebase'
+import { db, auth } from '../firebase'
 
 export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleInfo, fetchSchedule }) {
 
@@ -54,7 +53,15 @@ export default function ScheduleAddingModal({ modalOpen, setModalOpen, scheduleI
 
   const fetchStudentList = async () => {
     // setStudentList([])
-    const res = await db.collection('Student').get()
+    let academyId;
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
+    if (academyRes.docs.length)
+    academyRes.forEach((doc) => {
+      academyId = doc.id ? doc.id : null
+    })
+
+    const res = await db.collection('Student').where('targetAcademy', '==', db.collection('Academy').doc(academyId)).get()
+
     res.forEach((doc) => {
       if (doc.id === scheduleInfo.id) {
         return

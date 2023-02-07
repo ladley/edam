@@ -17,7 +17,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Settings from '@mui/icons-material/Settings';
 import People from '@mui/icons-material/People';
 
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 const FireNav = styled(List)({
     '& .MuiListItemButton-root': {
@@ -34,23 +34,21 @@ const FireNav = styled(List)({
 });
 
 export default function AcademyInfo({ academy }) {
-    const navigate = useNavigate()
-
     function ChildList() {
-        if (!academy.length) return
-        const keys = Object.keys(academy[0]) // ['address', 'admins[]', 'bankAccount', 'id',name, registDT, tel]
+        // if (!academy.length) return
+        const keys = Object.keys(academy) // ['address', 'admins[]', 'bankAccount', 'id',name, registDT, tel]
         const childList = []
 
         for (let i = 0; i < keys.length; i += 6) {
             const key = keys[i] // 각각의 키
-            const value = academy[0][key] // 각각의 키에 해당하는 각각의 값
+            const value = academy[key] // 각각의 키에 해당하는 각각의 값
             childList.push({ key: value, label: value })
         }
         const list =
             <>
                 <ListItemButton
                     key={'address'}
-                    sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                    sx={{ py: 0, minHeight: 32, color: '' }}
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
                         <BusinessIcon />
@@ -58,13 +56,13 @@ export default function AcademyInfo({ academy }) {
                         {'주소'}
                     </ListItemIcon>
                     <ListItemText
-                        primary={academy[0].address}
+                        primary={academy.address}
                         primaryTypographyProps={{ fontSize: 21, fontWeight: 'medium' }}
                     />
                 </ListItemButton>
                 <ListItemButton
                     key={'tel'}
-                    sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                    sx={{ py: 0, minHeight: 32, color: '' }}
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
                         <LocalPhoneIcon />
@@ -73,13 +71,13 @@ export default function AcademyInfo({ academy }) {
                         {'전화  '}
                     </ListItemIcon>
                     <ListItemText
-                        primary={academy[0].tel}
+                        primary={academy.tel}
                         primaryTypographyProps={{ fontSize: 21, fontWeight: 'medium' }}
                     />
                 </ListItemButton>
                 <ListItemButton
                     key={'계좌'}
-                    sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                    sx={{ py: 0, minHeight: 32, color: '' }}
                 >
                     <ListItemIcon sx={{ color: 'inherit' }}>
                         <AccountBalanceWalletIcon />
@@ -87,14 +85,14 @@ export default function AcademyInfo({ academy }) {
                         {'계좌  '}
                     </ListItemIcon>
                     <ListItemText
-                        primary={academy[0].bankAccount}
+                        primary={academy.bankAccount}
                         primaryTypographyProps={{ fontSize: 21, fontWeight: 'medium' }}
                     />
                 </ListItemButton>
-                {academy[0].admins?.map((item, index) => (
+                {academy.admins?.map((item, index) => (
                     <ListItemButton
                         key={item}
-                        sx={{ py: 0, minHeight: 32, color: 'rgba(255,255,255,.8)' }}
+                        sx={{ py: 0, minHeight: 32, color: '' }}
                     >
                         <ListItemIcon sx={{ color: 'inherit' }}>
                             <People />
@@ -124,19 +122,19 @@ export default function AcademyInfo({ academy }) {
                         },
                     },
                     palette: {
-                        mode: 'dark',
-                        primary: { main: 'rgb(102, 157, 246)' },
-                        background: { paper: 'rgb(5, 30, 52)' },
+                        // mode: 'dark',
+                        // primary: { main: 'rgb(102, 157, 246)' },
+                        // background: { paper: 'rgb(5, 30, 52)' },
                     },
                 })}
             >
                 <Paper elevation={0} sx={{ width: '100%', height: '100%' }}>
                     <FireNav component="nav" disablePadding>
                         <ListItemButton component="a" href="#customized-list">
-                            <ListItemIcon sx={{ fontSize: 30 }}>🔥</ListItemIcon>
+                            {/* <ListItemIcon sx={{ fontSize: 30 }}>🔥</ListItemIcon> */}
                             <ListItemText
                                 sx={{ my: 0 }}
-                                primary={academy[0]?.name}
+                                primary={academy?.name}
                                 primaryTypographyProps={{
                                     fontSize: 30,
                                     fontWeight: 'medium',
@@ -163,7 +161,7 @@ export default function AcademyInfo({ academy }) {
                                     size="large"
                                     sx={{
                                         '& svg': {
-                                            color: 'rgba(255,255,255,0.8)',
+                                            // color: 'rgba(255,255,255,0.8)',
                                             transition: '0.2s',
                                             transform: 'translateX(0) rotate(0)',
                                         },
@@ -196,8 +194,8 @@ export default function AcademyInfo({ academy }) {
                         <Divider />
                         <Box
                             sx={{
-                                bgcolor: 'rgba(71, 98, 130, 0.2)',
-                                pb: 2
+                                // bgcolor:'rgba(71, 98, 130, 0.2)',
+                                pb:  2
                             }}
                         >
                             <ChildList />
