@@ -17,7 +17,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Settings from '@mui/icons-material/Settings';
 import People from '@mui/icons-material/People';
 
-import { Link as RouterLink, useNavigate} from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 const FireNav = styled(List)({
     '& .MuiListItemButton-root': {
@@ -55,7 +55,7 @@ export default function AcademyInfo({ academy }) {
                     <ListItemIcon sx={{ color: 'inherit' }}>
                         <BusinessIcon />
 
-                        {'주소dsad'}
+                        {'주소'}
                     </ListItemIcon>
                     <ListItemText
                         primary={academy[0].address}
@@ -196,8 +196,8 @@ export default function AcademyInfo({ academy }) {
                         <Divider />
                         <Box
                             sx={{
-                                bgcolor:'rgba(71, 98, 130, 0.2)',
-                                pb:  2
+                                bgcolor: 'rgba(71, 98, 130, 0.2)',
+                                pb: 2
                             }}
                         >
                             <ChildList />
