@@ -2,7 +2,7 @@ import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
-import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
+import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';
 // mock
 // import account from '../../_mock/account';
 // hooks
@@ -39,8 +39,8 @@ const AccountStyle = styled('div')(({ theme }) => ({
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const [name, setName] = React.useState("");
   const { pathname } = useLocation();
-  const isDesktop = useResponsive('up', 'lg');
-
+  const isDesktop = useResponsive('up', 'lg');  
+  
   React.useEffect(() => {
       getAcademyInfo()
   }, [])
@@ -48,18 +48,19 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const getAcademyInfo = async () => {
     const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
     if(academyRes.docs.length){ 
-      academyRes.forEach((doc) => {
+      academyRes.forEach((doc) => {        
+        console.log(doc.data());
         setName(doc.data().name)
       })
     }
   }
- 
+
   const account = {
     displayName: name,
     email: 'demo@minimals.cc',
     photoURL: '/static/mock-images/avatars/avatar_default.jpg',
   };
-  
+
   React.useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();

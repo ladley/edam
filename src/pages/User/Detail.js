@@ -11,7 +11,6 @@ import {
   Stack,
   Button
 } from '@mui/material'
-import styled from 'styled-components'
 import moment from 'moment'
 import html2canvas from 'html2canvas';
 
@@ -33,6 +32,7 @@ export default function Detail() {
   const [schedule, setSchedule] = React.useState([])
   const [billItems, setBillItems] = React.useState([])
   const [dayList, setDayList] = React.useState([[], [], [], [], [], [], []])
+  const [showBill, setshowBill] = React.useState(false);
   const [selectedYearMonth, setSelectedYearMonth] = React.useState({
     month: String(monthNames[new Date().getMonth()]),
     year: String(new Date().getFullYear()),
@@ -97,19 +97,9 @@ export default function Detail() {
   const updateSchedule = async () => {
     try {
       if (!loadSchedule) return
-      const res = await
-      db.collection('Student')
+      await db.collection('Student')
       .doc(documentId)
-      .update({
-          'regularSchedule': schedule
-        // 'regularSchedule': schedule.map(item => ({
-        //   ...item,
-        //   startTM: moment(item.startTM).format('HH:mm').toString(),
-        //   endTM: moment(item.endTM).format('HH:mm').toString()
-        // }))
-      })
-
-      // console.log(res)
+      .update({ 'regularSchedule': schedule })
     } catch(e) {
       console.error('error occured in updateSchdule function', e)
     }
@@ -119,9 +109,7 @@ export default function Detail() {
       const res = await
         db.collection('Student')
         .doc(documentId)
-        // .collection('RegularSchedule')
         .get()
-      // console.log(res.data())
       if(res.data().regularSchedule) {
         setSchedule(res.data().regularSchedule.map(item => ({
           ...item,
@@ -210,7 +198,7 @@ export default function Detail() {
 
   const applyRegularSchedule = () => {
     const batch = db.batch()
-    const scheduleMapRes = schedule.map(
+    schedule.map(
       (schedule, index) => schedule.schedules.map(
         item => {
           const start = moment(item.start).format('HH:mm')
@@ -244,6 +232,8 @@ export default function Detail() {
       console.error(e.code, e.message)
     }
   }
+
+
   return (
     <Page>
       <Container>
@@ -360,18 +350,27 @@ export default function Detail() {
                   />
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent>
-
-                    <Table
-                      year={selectedYearMonth.year && selectedYearMonth.year}
-                      month={selectedYearMonth.month && selectedYearMonth.month}
-                      classBill={billItems}
-                      targetId={studentInfo && studentInfo.id}
-                    />
-                </CardContent>
-              </Card>
+              { showBill &&
+                <Card>
+                  <CardContent>
+                      <Table
+                        year={selectedYearMonth.year && selectedYearMonth.year}
+                        month={selectedYearMonth.month && selectedYearMonth.month}
+                        classBill={billItems}
+                        targetId={studentInfo && studentInfo.id}
+                      />
+                  </CardContent>
+                </Card>
+              }
             </div>
+              <Button
+                style={{ marginTop: 8 }}
+                fullWidth
+                variant='contained'
+                onClick={() => setshowBill(!showBill)}
+              >
+                {!showBill ? '청구서 표시' : '청구서 숨김'}
+              </Button>
               <Button
                 style={{ marginTop: 8 }}
                 fullWidth
@@ -387,21 +386,3 @@ export default function Detail() {
     </Page>
   )
 }
-
-const DayPicker = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 8px;
-`
-
-const DayTimeWrap = styled.div`
-  margin-bottom: 8px;
-`
-
-const TimePickerWrap = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`

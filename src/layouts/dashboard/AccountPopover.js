@@ -40,7 +40,6 @@ export default function AccountPopover() {
     setDisplayInfo(auth.currentUser)
   }, [])
 
-
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };

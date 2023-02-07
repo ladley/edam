@@ -8,10 +8,6 @@ import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -23,7 +19,6 @@ import moment from 'moment'
 import { db } from '../firebase'
 
 export default function ScheduleModifyModal({ modalOpen, setModalOpen, fetchSchedule, id }) {
-  // 
   const [selectedDay, setSelectedDay] = React.useState()
   const [startTime, setStartTime] = React.useState()
   const [endTime, setEndTime] = React.useState()
@@ -83,8 +78,6 @@ export default function ScheduleModifyModal({ modalOpen, setModalOpen, fetchSche
     setSelectedDay()
     setStartTime()
     setEndTime()
-    // setStudentList()
-    // setSelectedStudent()
     setModalOpen(false)
   }
   return (

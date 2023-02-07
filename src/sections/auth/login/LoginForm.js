@@ -10,7 +10,7 @@ import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
-import { db, auth } from '../../../firebase';
+import { auth } from '../../../firebase';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
