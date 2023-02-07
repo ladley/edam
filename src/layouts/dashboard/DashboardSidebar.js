@@ -49,7 +49,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
     if(academyRes.docs.length){ 
       academyRes.forEach((doc) => {        
-        console.log(doc.data());
         setName(doc.data().name)
       })
     }
