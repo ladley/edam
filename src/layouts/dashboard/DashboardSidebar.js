@@ -1,11 +1,10 @@
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';
 // mock
-import account from '../../_mock/account';
+// import account from '../../_mock/account';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
 // components
@@ -14,7 +13,7 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
 import navConfig from './NavConfig';
-
+import { db, auth } from '../../firebase';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -36,17 +35,33 @@ const AccountStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-DashboardSidebar.propTypes = {
-  isOpenSidebar: PropTypes.bool,
-  onCloseSidebar: PropTypes.func,
-};
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+  const [name, setName] = React.useState("");
   const { pathname } = useLocation();
+  const isDesktop = useResponsive('up', 'lg');  
+  
+  React.useEffect(() => {
+      getAcademyInfo()
+  }, [])
+  
+  const getAcademyInfo = async () => {
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
+    if(academyRes.docs.length){ 
+      academyRes.forEach((doc) => {        
+        console.log(doc.data());
+        setName(doc.data().name)
+      })
+    }
+  }
 
-  const isDesktop = useResponsive('up', 'lg');
+  const account = {
+    displayName: name,
+    email: 'demo@minimals.cc',
+    photoURL: '/static/mock-images/avatars/avatar_default.jpg',
+  };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
     }
