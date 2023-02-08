@@ -70,13 +70,14 @@ export default function LoginForm() {
 
       if (e.code === "auth/wrong-password") {
         setSnackbarState(prev => ({
-          vertical: "top",
-          horizontal: "center",
           message: "비밀번호가 틀렸습니다.",
           open: true,
         }))
       } else if (e.code === "auth/user-not-found"){
-        alert("존재하지 않는 아이디입니다.");
+        setSnackbarState(prev => ({
+          message: "존재하지 않는 아이디입니다.",
+          open: true,
+        }))        
       } else {
         // console.error(e)
       }
@@ -106,7 +107,8 @@ export default function LoginForm() {
         />
       </Stack>
       <Snackbar
-        anchorOrigin={{ vertical: snackbarState.vertical, horizontal: snackbarState.horizontal }}
+        autoHideDuration={1000}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={snackbarState.open}
         onClose={handleClose}
         message={snackbarState.message}
