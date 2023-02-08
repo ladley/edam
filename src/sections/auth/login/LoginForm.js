@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { Link, Stack, IconButton, InputAdornment , Snackbar} from '@mui/material';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
@@ -14,6 +16,13 @@ import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hoo
 import { auth } from '../../../firebase';
 // ----------------------------------------------------------------------
 
+const Alert = React.forwardRef((
+  props,
+  ref,
+) => {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 export default function LoginForm() {
   const navigate = useNavigate();
 
@@ -21,8 +30,6 @@ export default function LoginForm() {
 
   const [snackbarState, setSnackbarState] = React.useState({
     open: false,
-    vertical: "top",
-    horizontal: "center",
     message: "",
   });
 
@@ -62,15 +69,15 @@ export default function LoginForm() {
       console.error(e.code)
 
       if (e.code === "auth/wrong-password") {
-        setSnackbarState(prev => ({
+        setSnackbarState(({
           message: "비밀번호가 틀렸습니다.",
           open: true,
         }))
       } else if (e.code === "auth/user-not-found"){
-        setSnackbarState(prev => ({
+        setSnackbarState(({
           message: "존재하지 않는 아이디입니다.",
           open: true,
-        }))        
+        }))
       } else {
         // console.error(e)
       }
@@ -100,13 +107,17 @@ export default function LoginForm() {
         />
       </Stack>
       <Snackbar
-        autoHideDuration={1000}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        autoHideDuration={1500}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         open={snackbarState.open}
         onClose={handleClose}
         message={snackbarState.message}
-        key={snackbarState.vertical + snackbarState.horizontal}
-      />
+        key='login-fail-alert'
+      >
+        <Alert onClose={handleClose} severity="error">
+          {snackbarState.message}
+        </Alert>
+      </Snackbar>
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
         <RHFCheckbox name="remember" label="로그인정보 기억하기" />
         <Link variant="subtitle2" underline="hover">
