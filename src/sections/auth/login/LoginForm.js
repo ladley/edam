@@ -47,13 +47,6 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  //
-  
-  // const handleClick = (newState) => () => {
-  //   console.log(newState);
-  //   setSnackbarState({ open: true, ...newState });
-  // };
-
   const handleClose = () => {
     setSnackbarState(prev => ({ ...prev, open: false }));
   };
