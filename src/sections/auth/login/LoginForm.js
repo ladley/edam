@@ -19,6 +19,13 @@ export default function LoginForm() {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const [snackbarState, setSnackbarState] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+    message: "",
+  });
+
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('올바른 이메일을 입력해주세요').required('이메일을 입력해주세요'),
     password: Yup.string().min(6, '비밀번호는 6자이상입니다.').required('패스워드를 입력해주세요'),
@@ -41,19 +48,14 @@ export default function LoginForm() {
   } = methods;
 
   //
-  const [state, setState] = React.useState({
-    open: false,
-    vertical: "top",
-    horizontal: "center"
-  });
-  const { vertical, horizontal, open , message } = state;
   
-  const handleClick = (newState) => () => {
-    console.log(newState);
-    setState({ open: true, ...newState });
-  };
+  // const handleClick = (newState) => () => {
+  //   console.log(newState);
+  //   setSnackbarState({ open: true, ...newState });
+  // };
+
   const handleClose = () => {
-    setState({ ...state, open: false });
+    setSnackbarState(prev => ({ ...prev, open: false }));
   };
   //
 
@@ -63,14 +65,21 @@ export default function LoginForm() {
       if(loginRes) navigate('/dashboard/app')
 
     } catch(e) {
-      if(e.code === "auth/wrong-password"){
-        handleClick({
+      console.error(e)
+      console.error(e.code)
+
+      if (e.code === "auth/wrong-password") {
+        setSnackbarState(prev => ({
           vertical: "top",
-        horizontal: "center",
-        message: "비밀번호가 틀렸습니다."})        
-      }else if(e.code === "auth/user-not-found"){
+          horizontal: "center",
+          message: "비밀번호가 틀렸습니다.",
+          open: true,
+        }))
+      } else if (e.code === "auth/user-not-found"){
         alert("존재하지 않는 아이디입니다.");
-      }      
+      } else {
+        // console.error(e)
+      }
     }
 
     // navigate('/dashboard', { replace: true });
@@ -97,11 +106,11 @@ export default function LoginForm() {
         />
       </Stack>
       <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={open}
+        anchorOrigin={{ vertical: snackbarState.vertical, horizontal: snackbarState.horizontal }}
+        open={snackbarState.open}
         onClose={handleClose}
-        message= {message}
-        key={vertical + horizontal}
+        message={snackbarState.message}
+        key={snackbarState.vertical + snackbarState.horizontal}
       />
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
         <RHFCheckbox name="remember" label="로그인정보 기억하기" />
