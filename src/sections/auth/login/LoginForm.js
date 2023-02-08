@@ -1,15 +1,16 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import React ,{ useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Link, Stack, IconButton, InputAdornment } from '@mui/material';
+import { Link, Stack, IconButton, InputAdornment , Snackbar} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
+// import { Snackbar } from '../../../components/SnakBar/snackbar';
 import { auth } from '../../../firebase';
 // ----------------------------------------------------------------------
 
@@ -39,17 +40,34 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
+  //
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center"
+  });
+  const { vertical, horizontal, open , message } = state;
+  
+  const handleClick = (newState) => () => {
+    console.log(newState);
+    setState({ open: true, ...newState });
+  };
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+  //
+
   const onSubmit = async (data) => {
     try {
-      // asdf
-      // aaaa
-      // aa
       const loginRes = await auth.signInWithEmailAndPassword(data.email, data.password)
       if(loginRes) navigate('/dashboard/app')
-      
+
     } catch(e) {
       if(e.code === "auth/wrong-password"){
-        alert("비밀번호가 틀렸습니다.");
+        handleClick({
+          vertical: "top",
+        horizontal: "center",
+        message: "비밀번호가 틀렸습니다."})        
       }else if(e.code === "auth/user-not-found"){
         alert("존재하지 않는 아이디입니다.");
       }      
@@ -78,7 +96,13 @@ export default function LoginForm() {
           }}
         />
       </Stack>
-
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        message= {message}
+        key={vertical + horizontal}
+      />
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
         <RHFCheckbox name="remember" label="로그인정보 기억하기" />
         <Link variant="subtitle2" underline="hover">
