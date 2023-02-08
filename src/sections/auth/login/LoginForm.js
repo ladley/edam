@@ -46,8 +46,13 @@ export default function LoginForm() {
       // aa
       const loginRes = await auth.signInWithEmailAndPassword(data.email, data.password)
       if(loginRes) navigate('/dashboard/app')
+      
     } catch(e) {
-      console.error(e.code, e.message)
+      if(e.code === "auth/wrong-password"){
+        alert("비밀번호가 틀렸습니다.");
+      }else if(e.code === "auth/user-not-found"){
+        alert("존재하지 않는 아이디입니다.");
+      }      
     }
 
     // navigate('/dashboard', { replace: true });
