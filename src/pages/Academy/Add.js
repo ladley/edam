@@ -7,12 +7,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { useNavigate } from 'react-router-dom'
 
-import { Box, Button, Card, CardContent, Divider, TextField } from '@mui/material';
+import { Box, Button, Card, CardContent, Divider, TextField, Avatar } from '@mui/material';
 
-import { db, auth } from '../../firebase'
+import { db, auth, storage } from '../../firebase'
 
 export default function Add() {
   const [title, setTitle] = React.useState('학원 등록하기')
+  const [image, setImage] = React.useState('')
   const [id, setId] = React.useState('')
   const [name, setName] = React.useState('')
   const [tel, setTel] = React.useState('')
@@ -21,6 +22,8 @@ export default function Add() {
   const [bankAccount, setbankAccount] = React.useState('')
 
   const navigate = useNavigate()
+  const storageRef = storage.ref()
+  const inputRef = React.useRef()
 
   React.useEffect(() => {
     getAcademyInfo()
@@ -33,6 +36,7 @@ export default function Add() {
       academyRes.forEach((doc) => {
         setTitle('학원 정보 수정')
         setId(doc.id)
+        setImage(doc.data().image || '')
         setName(doc.data().name || '')
         setTel(doc.data().tel || '')
         setAddress(doc.data().address || '')
@@ -51,7 +55,7 @@ export default function Add() {
       await db.collection('Academy').doc(addeAcademyId).set({
         admins: [auth.currentUser.uid],
         id: addeAcademyId,
-        name, tel, address, registDT, bankAccount
+        name, tel, address, registDT, bankAccount, image
       })
 
       navigate('/dashboard/academy')
@@ -63,11 +67,25 @@ export default function Add() {
   const handleUpdateAcademy = async () => {
     try {
       await db.collection('Academy').doc(id).update({
-        name, tel, address, bankAccount
+        name, tel, address, bankAccount, image
       })
 
       navigate('/dashboard/academy')
     } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const uploadImage = async (imageFile) => {
+
+
+    const academyRef = storageRef.child(`Academy/${name}.jpg`)
+    console.log(academyRef)
+    try {
+      await academyRef.put(imageFile)
+      const imgUrl = await academyRef.getDownloadURL()
+      setImage(imgUrl)
+    } catch(e) {
       console.error(e)
     }
   }
@@ -80,6 +98,21 @@ export default function Add() {
 
           <Divider />
           <FormWrap>
+            <Avatar src={`${image !== '' ? image : '/static/mock-images/avatars/avatar_default.jpg'}`} alt="academy img" />
+            <Button
+              variant="contained"
+              color="info"
+              component="label"
+            >
+              이미지 업로드하기
+              <input
+                type="file"
+                accept='.jpg,.jpeg,.png,.gif,.webp'
+                // value={image}
+                onChange={(e) => uploadImage(e.target.files[0])}
+                hidden
+              />
+            </Button>
             <TextField
               label="학원명"
               variant="outlined"

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
+import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -130,8 +131,8 @@ export default function AcademyInfo({ academy }) {
             >
                 <Paper elevation={0} sx={{ width: '100%', height: '100%' }}>
                     <FireNav component="nav" disablePadding>
-                        <ListItemButton component="a" href="#customized-list">
-                            {/* <ListItemIcon sx={{ fontSize: 30 }}>🔥</ListItemIcon> */}
+                        <ListItemButton component="a" href="#customized-list" sx={{ gap: 2 }}>
+                            <Avatar src={`${academy?.image !== '' ? academy.image : '/static/mock-images/avatars/avatar_default.jpg'}`} alt="academy img" />
                             <ListItemText
                                 sx={{ my: 0 }}
                                 primary={academy?.name}
@@ -141,6 +142,7 @@ export default function AcademyInfo({ academy }) {
                                     letterSpacing: 0,
                                 }}
                             />
+
                         </ListItemButton>
                         <Divider />
                         <ListItem component="div" disablePadding>
@@ -206,3 +208,17 @@ export default function AcademyInfo({ academy }) {
         </Box>
     );
 }
+
+
+const ProfileImgWrap = styled('div')`
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  
+  & > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    /* width: 100%; */
+  }
+`
