@@ -25,18 +25,6 @@ import { db , auth} from '../firebase';
 
 export default function DenseTable({classBill, month, year, targetId }) {  
   const [bankAccount, setbankAccount] = React.useState('')
-
-  React.useEffect(() => {
-    getAcademyInfo()
-  }, [])
-  const getAcademyInfo = async () => {
-    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
-    if(academyRes.docs.length) {      
-      academyRes.forEach((doc) => {
-        setbankAccount(doc.data().bankAccount)
-      })
-    }
-  }
   const [billId, setBillId] = React.useState('')
   const [billPrice, setBillPrice] = React.useState(0)
   const [isAddMode, setIsAddMode] = React.useState(false)
@@ -53,6 +41,15 @@ export default function DenseTable({classBill, month, year, targetId }) {
   })
 
   React.useEffect(() => {
+    let price = Number(classBill.price * classBill.each)
+    materials.map(item => {
+      price += Number(item.price * item.each)
+      return true
+    })
+    setBillPrice(price)
+  }, [materials, classBill])
+
+  React.useEffect(() => {
     fetchMaterials()
     fetchBillInformation()
   }, [targetId, month, year])
@@ -65,18 +62,18 @@ export default function DenseTable({classBill, month, year, targetId }) {
     }))
   }, [month])
 
-  // React.useEffect(() => {
-  //   updateBill()
-  // }, [billPrice, isPaid, paymentMethod])
-
   React.useEffect(() => {
-    let price = Number(classBill.price * classBill.each)
-    materials.map(item => {
-      price += Number(item.price * item.each)
-      return true
-    })
-    setBillPrice(price)
-  }, [materials, classBill])
+    getAcademyInfo()
+  }, [])
+
+  const getAcademyInfo = async () => {
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
+    if(academyRes.docs.length) {
+      academyRes.forEach((doc) => {
+        setbankAccount(doc.data().bankAccount)
+      })
+    }
+  }
 
   const fetchMaterials = async () => {
     try {
@@ -90,9 +87,6 @@ export default function DenseTable({classBill, month, year, targetId }) {
       res.docs.forEach(item =>
         setMaterials(prev => [...prev, item.data()])
       )
-      // console.log(res.data().forEach(item => console.log(item)))
-      // res.forEach(item => console.log(item))
-
     } catch(e) {
       console.error(e)
     }
@@ -112,7 +106,14 @@ export default function DenseTable({classBill, month, year, targetId }) {
       setIsPaid(billInfo.isPaid)
       setPaymentMethod(billInfo.paymentMethod)
     } else {
-      const res = await db.collection('Bill').add({})
+      const res = await db.collection('Bill').add({
+        billPrice,
+        month,
+        year,
+        student: db.collection('Student').doc(targetId),
+        paymentMethod: 'card',
+        isPaid: false,
+      })
       setIsPaid(false)
       setPaymentMethod('card')
       setBillId(res.id)
