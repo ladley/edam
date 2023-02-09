@@ -112,7 +112,14 @@ export default function DenseTable({classBill, month, year, targetId }) {
       setIsPaid(billInfo.isPaid)
       setPaymentMethod(billInfo.paymentMethod)
     } else {
-      const res = await db.collection('Bill').add({})
+      const res = await db.collection('Bill').add({
+        billPrice,
+        month,
+        year,
+        student: db.collection('Student').doc(targetId),
+        paymentMethod: 'card',
+        isPaid: false,
+      })
       setIsPaid(false)
       setPaymentMethod('card')
       setBillId(res.id)
