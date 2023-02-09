@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
+import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -131,10 +132,7 @@ export default function AcademyInfo({ academy }) {
                 <Paper elevation={0} sx={{ width: '100%', height: '100%' }}>
                     <FireNav component="nav" disablePadding>
                         <ListItemButton component="a" href="#customized-list" sx={{ gap: 2 }}>
-                            {/* <ListItemIcon sx={{ fontSize: 30 }}>🔥</ListItemIcon> */}
-                            <ProfileImgWrap>
-                                <img src={`${academy?.image !== '' ? academy.image : '/static/mock-images/avatars/avatar_default.jpg'}`} alt="academy img" />
-                            </ProfileImgWrap>
+                            <Avatar src={`${academy?.image !== '' ? academy.image : '/static/mock-images/avatars/avatar_default.jpg'}`} alt="academy img" />
                             <ListItemText
                                 sx={{ my: 0 }}
                                 primary={academy?.name}

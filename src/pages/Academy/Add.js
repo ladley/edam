@@ -7,7 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import { useNavigate } from 'react-router-dom'
 
-import { Box, Button, Card, CardContent, Divider, TextField } from '@mui/material';
+import { Box, Button, Card, CardContent, Divider, TextField, Avatar } from '@mui/material';
 
 import { db, auth, storage } from '../../firebase'
 
@@ -98,9 +98,7 @@ export default function Add() {
 
           <Divider />
           <FormWrap>
-            <ProfileImgWrap>
-              <img src={`${image !== '' ? image : '/static/mock-images/avatars/avatar_default.jpg'}`} alt="academy img" />
-            </ProfileImgWrap>
+            <Avatar src={`${image !== '' ? image : '/static/mock-images/avatars/avatar_default.jpg'}`} alt="academy img" />
             <Button
               variant="contained"
               color="info"
@@ -192,17 +190,4 @@ const FormWrap = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-`
-
-const ProfileImgWrap = styled.div`
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  
-  & > img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    /* width: 100%; */
-  }
 `
