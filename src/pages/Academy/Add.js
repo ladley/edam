@@ -99,7 +99,7 @@ export default function Add() {
           <Divider />
           <FormWrap>
             <ProfileImgWrap>
-              <img src={`${image}`} alt="academy img" />
+              <img src={`${image !== '' ? image : '/static/mock-images/avatars/avatar_default.jpg'}`} alt="academy img" />
             </ProfileImgWrap>
             <Button
               variant="contained"
