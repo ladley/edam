@@ -130,8 +130,11 @@ export default function AcademyInfo({ academy }) {
             >
                 <Paper elevation={0} sx={{ width: '100%', height: '100%' }}>
                     <FireNav component="nav" disablePadding>
-                        <ListItemButton component="a" href="#customized-list">
+                        <ListItemButton component="a" href="#customized-list" sx={{ gap: 2 }}>
                             {/* <ListItemIcon sx={{ fontSize: 30 }}>🔥</ListItemIcon> */}
+                            <ProfileImgWrap>
+                                <img src={`${academy?.image !== '' ? academy.image : '/static/mock-images/avatars/avatar_default.jpg'}`} alt="academy img" />
+                            </ProfileImgWrap>
                             <ListItemText
                                 sx={{ my: 0 }}
                                 primary={academy?.name}
@@ -141,6 +144,7 @@ export default function AcademyInfo({ academy }) {
                                     letterSpacing: 0,
                                 }}
                             />
+
                         </ListItemButton>
                         <Divider />
                         <ListItem component="div" disablePadding>
@@ -206,3 +210,17 @@ export default function AcademyInfo({ academy }) {
         </Box>
     );
 }
+
+
+const ProfileImgWrap = styled('div')`
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  
+  & > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    /* width: 100%; */
+  }
+`

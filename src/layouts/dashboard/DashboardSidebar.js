@@ -38,6 +38,7 @@ const AccountStyle = styled('div')(({ theme }) => ({
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const [name, setName] = React.useState("");
+  const [image, setImage] = React.useState('');
   const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');  
   
@@ -48,8 +49,9 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const getAcademyInfo = async () => {
     const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
     if(academyRes.docs.length){ 
-      academyRes.forEach((doc) => {        
+      academyRes.forEach((doc) => {
         setName(doc.data().name)
+        setImage(doc.data().image)
       })
     }
   }
@@ -81,13 +83,13 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            <Avatar src={image !== '' ? image : account.photoURL} alt="photoURL" />
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {name}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                관리자
               </Typography>
             </Box>
           </AccountStyle>
