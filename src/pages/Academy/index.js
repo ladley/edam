@@ -13,6 +13,12 @@ import Page from '../../components/Page';
 import AcademyInfo from './AcademyInfo'
 import { db, auth } from '../../firebase'
 
+// components
+import { AcademySort, AcademyList, AcademyCartWidget } from './AcademyList'
+// mock
+import PRODUCTS from '../../_mock/products';
+
+
 export default function User() {
   const [academy, setAcademy] = useState([])
   const location = useLocation()
@@ -31,6 +37,15 @@ export default function User() {
         })
       })
   }
+  const [openFilter, setOpenFilter] = useState(false);
+
+  const handleOpenFilter = () => {
+    setOpenFilter(true);
+  };
+
+  const handleCloseFilter = () => {
+    setOpenFilter(false);
+  };
 
   return (
     <Page title="User">
@@ -44,6 +59,17 @@ export default function User() {
           <AcademyInfo
             academy={academy}
           />
+      </Container>
+
+      <Container>
+        <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
+          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
+            <AcademySort />
+          </Stack>
+        </Stack>
+
+        <AcademyList Academys={PRODUCTS} />
+        <AcademyCartWidget />
       </Container>
     </Page>
   );

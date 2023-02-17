@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
 
 import { db, auth } from '../../firebase'
 
@@ -53,17 +52,6 @@ export default function AcademyListTable() {
     useEffect(() => {
         console.log(academys)
     }, [academys]);
-
-    const { data } = useDemoData({
-        dataSet: 'Employee',
-        visibleFields: VISIBLE_FIELDS,
-        rowLength: 100,
-    });
-
-    const columns = useMemo(
-        () => data.columns.filter((column) => VISIBLE_FIELDS.includes(column.field)),
-        [data.columns],
-    );
 
     async function getAcademyList() {
         const snapshot = await db.collection('Academy').get()

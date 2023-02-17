@@ -29,8 +29,8 @@ export default function Add() {
 
   const getAcademyInfo = async () => {
 
-    const academyRes = await db.collection('Academy').where('admins', 'array-contains',auth.currentUser.uid).get()
-    if(academyRes.docs.length) {
+    const academyRes = await db.collection('Academy').where('admins', 'array-contains', auth.currentUser.uid).get()
+    if (academyRes.docs.length) {
       academyRes.forEach((doc) => {
         setTitle('학원 정보 수정')
         setId(doc.id)
@@ -78,7 +78,7 @@ export default function Add() {
       <CardContent>
         <Box>
           <h1 style={{ marginBottom: 12 }}>{title}</h1>
-          <AcademyListTable/>
+          <AcademyListTable />
           <Divider />
           <FormWrap>
             <TextField
@@ -98,7 +98,7 @@ export default function Add() {
               value={tel}
               onChange={(e) => setTel(e.target.value)}
             />
-            
+
             <TextField
               label="주소"
               variant="outlined"
@@ -126,25 +126,23 @@ export default function Add() {
               value={bankAccount}
               onChange={(e) => setbankAccount(e.target.value)}
             />
-            {title === '학원 등록하기'?
             <Button
-            style={{ margin: 8 }}
-            fullWidth
-            variant='contained'
-            onClick={() => handleAddAcademy()}
-          >
-            추가하기
-          </Button>
-          : 
-          <Button
-          style={{ margin: 8 }}
-          fullWidth
-          variant='contained'
-          onClick={() => handleUpdateAcademy()}
-        >
-          수정하기
-        </Button>
-            }
+              style={{ margin: 8 }}
+              fullWidth
+              variant='contained'
+              onClick={() => handleAddAcademy()}
+            >
+              추가하기
+            </Button>
+            <Button
+              style={{ margin: 8 }}
+              fullWidth
+              variant='contained'
+              onClick={() => handleUpdateAcademy()}
+            >
+              수정하기
+            </Button>
+
 
 
           </FormWrap>
